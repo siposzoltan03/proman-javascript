@@ -45,14 +45,40 @@ export let dom = {
         }
         dataHandler.getStatuses(this.createBoardColumns);
     },
-    loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
-    },
     showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
+        for (let card of cards){
+            let board = document.querySelector(`#board-${card["board_id"]}`);
+            let status = board.querySelector(`.column-${card["status_id"]}`);
+            let content = status.querySelector('.board-column-content');
+            let newCard = document.createElement('div');
+            newCard.setAttribute('class', 'card');
+            let deleteButton = document.createElement('div');
+            deleteButton.setAttribute('class', 'card-remove');
+            let trashIcon = document.createElement('i');
+            trashIcon.classList.add('fas');
+            trashIcon.classList.add('fa-trash-alt');
+            deleteButton.appendChild(trashIcon);
+            newCard.appendChild(deleteButton);
+            let cardTitle = document.createElement('div');
+            cardTitle.setAttribute('class', 'card-title');
+            cardTitle.textContent = card["title"];
+            cardTitle.setAttribute('data-id', card["id"]);
+            newCard.appendChild(cardTitle);
+            content.appendChild(newCard);
+
+        }
     },
-    // here comes more features
+    loadCards: function (boardId) {
+        dataHandler.getCardsByBoardId(boardId, this.showCards);
+    },
+    getBoardIdsFromDocument: function() {
+        let boardIds = document.querySelectorAll('.board');
+        for(let rawBoardId of boardIds){
+            let boardId = rawBoardId.id.replace('board-', '');
+            this.loadCards(boardId)
+        }
+
+    },
     createBoardHeader: function (boardRow) {
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
@@ -82,8 +108,8 @@ export let dom = {
             boardColumns.classList.add('board-columns');
             for (let status in statuses) {
                 let boardColumn = document.createElement('div');
-                boardColumn.classList.add('board-column');
                 boardColumn.setAttribute('class', 'column-' + status);
+                boardColumn.classList.add('board-column');
                 let boardColumnTitle = document.createElement('div');
                 boardColumnTitle.classList.add('board-column-title');
                 boardColumnTitle.textContent = statuses[status];
