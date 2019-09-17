@@ -52,6 +52,32 @@ export let dataHandler = {
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
-    }
+    },
     // here comes more features
+    submitNewTitle: function submit_new_title() {
+                        let newTitle = document.querySelector("#new-board-title");
+                        let boardId = "1";
+                        let titleAndId = {
+                            newTitle: newTitle,
+                            boardId: boardId
+                        };
+                        console.log(titleAndId)
+                        fetch(`${window.origin}/change-board-title`, {
+                            method: "POST",
+                            credentials: "include",
+                            body: JSON.stringify((titleAndId)),
+                            cache: "no-cache",
+                            headers: new Headers({
+                                "content-type": "application/json"
+                            })
+                        }).then(function (response) {
+                            if (response.status !== 200){
+                                console.log(`RESPONSE STATUS WAS NOT 200: ${response.status}`)
+                            }
+                            response.json().then(function(data){
+                                console.log(data)
+                            })
+                        })
+
+                    },
 };

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, jsonify, make_response
 from util import json_response
 
 import data_manager
@@ -32,6 +32,15 @@ def get_cards_for_board(board_id: int):
     :param board_id: id of the parent board
     """
     return data_manager.get_cards_for_board(board_id)
+
+
+@app.route("/change-board-title", methods=['POST'])
+@json_response
+def change_board_title():
+    req = request.get_json()
+    print(req)
+    res = make_response(jsonify(req), 200)
+    return res
 
 
 def main():

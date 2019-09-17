@@ -54,4 +54,21 @@ export let dom = {
         // it adds necessary event listeners also
     },
     // here comes more features
+    renameBoard: function () {
+        let boardTitle = document.querySelectorAll('.board-title');
+        for (let title of boardTitle) {
+            title.addEventListener('dblclick', function(event) {
+
+                let original = event.currentTarget;
+                event.currentTarget.outerHTML =`<input type="text" id="new-board-title" placeholder="${original.innerHTML}" size="15" minlength="1">` +
+                `<button id="title-save-button">Save</button>`;
+                let saveButton = document.querySelector('#title-save-button');
+                saveButton.addEventListener('click', dataHandler.submitNewTitle());
+            });
+        }
+
+    }
 };
+
+
+
