@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     _appendToElement: function (elementToExtend, textToAppend, prepend = false) {
@@ -22,29 +22,28 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
+        let statuses = dataHandler.getStatuses(dataHandler.retStatuses);
+        console.log(statuses);
+        let boardContainer = document.querySelector('.board-container');
 
-        let boardList = '';
 
-        for(let board of boards){
-            boardList += `
-                <li>${board.title}</li>
-            `;
+        for (let board of boards) {
+            let section = document.createElement('section');
+            section.classList.add('board');
+            section.setAttribute('id', 'board-' + board.id);
+            boardContainer.appendChild(section);
+
+            dataHandler.getBoards(this.createBoardHeader.apply(this, [board]));
+            dataHandler.getStatuses(this.createBoardColumns);
         }
 
-        const outerHtml = `
-            <ul class="board-container">
-                ${boardList}
-            </ul>
-        `;
-
-        this._appendToElement(document.querySelector('#boards'), outerHtml);
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -54,4 +53,46 @@ export let dom = {
         // it adds necessary event listeners also
     },
     // here comes more features
+    createBoardHeader: function (boardRow) {
+        let section = document.querySelector('#board-' + boardRow.id);
+        let boardHeader = document.createElement('div');
+        boardHeader.classList.add('board-header');
+        let boardTitle = document.createElement('span');
+        boardTitle.classList.add('board-title');
+        boardTitle.textContent = boardRow.title;
+        let buttonAddBoard = document.createElement('button');
+        buttonAddBoard.classList.add('board-add');
+        buttonAddBoard.textContent = 'Add Card';
+        let buttonToggleBoard = document.createElement('button');
+        buttonToggleBoard.classList.add('board-toggle');
+        let icon = document.createElement('i');
+        icon.classList.add('fas');
+        icon.classList.add('fa-chevron-down');
+        section.appendChild(boardHeader);
+        boardHeader.appendChild(boardTitle);
+        boardHeader.appendChild(buttonAddBoard);
+        boardHeader.appendChild(buttonToggleBoard);
+        buttonToggleBoard.appendChild(icon);
+    },
+
+    createBoardColumns(boardRow, statuses) {
+        let section = document.querySelector(`#board-${boardRow.id}`);
+        let boardColumns = document.createElement('div');
+        boardColumns.classList.add('board-columns');
+        for (let status in statuses) {
+            let boardColumn = document.createElement('div');
+            boardColumn.classList.add('board-column');
+            boardColumn.setAttribute('id', 'column-' + status);
+            let boardColumnTitle = document.createElement('div');
+            boardColumnTitle.classList.add('board-column-title');
+            boardColumnTitle.textContent = statuses[status];
+            let boardColumnContent = document.createElement("div");
+            boardColumnContent.classList.add('board-column-content');
+            section.appendChild(boardColumns);
+            boardColumns.appendChild(boardColumn);
+            boardColumn.appendChild(boardColumnTitle);
+            boardColumn.appendChild(boardColumnContent);
+        }
+    }
+
 };
