@@ -40,10 +40,10 @@ export let dom = {
             section.setAttribute('id', 'board-' + board.id);
             boardContainer.appendChild(section);
 
-            dataHandler.getBoards(this.createBoardHeader.apply(this, [board]));
-            dataHandler.getStatuses(this.createBoardColumns);
-        }
+            this.createBoardHeader(board);
 
+        }
+        dataHandler.getStatuses(this.createBoardColumns);
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -75,24 +75,28 @@ export let dom = {
         buttonToggleBoard.appendChild(icon);
     },
 
-    createBoardColumns(boardRow, statuses) {
-        let section = document.querySelector(`#board-${boardRow.id}`);
-        let boardColumns = document.createElement('div');
-        boardColumns.classList.add('board-columns');
-        for (let status in statuses) {
-            let boardColumn = document.createElement('div');
-            boardColumn.classList.add('board-column');
-            boardColumn.setAttribute('id', 'column-' + status);
-            let boardColumnTitle = document.createElement('div');
-            boardColumnTitle.classList.add('board-column-title');
-            boardColumnTitle.textContent = statuses[status];
-            let boardColumnContent = document.createElement("div");
-            boardColumnContent.classList.add('board-column-content');
-            section.appendChild(boardColumns);
-            boardColumns.appendChild(boardColumn);
-            boardColumn.appendChild(boardColumnTitle);
-            boardColumn.appendChild(boardColumnContent);
+    createBoardColumns(statuses) {
+        let boards = document.querySelectorAll('.board');
+        for (let board of boards) {
+            let boardColumns = document.createElement('div');
+            boardColumns.classList.add('board-columns');
+            for (let status in statuses) {
+                let boardColumn = document.createElement('div');
+                boardColumn.classList.add('board-column');
+                boardColumn.setAttribute('class', 'column-' + status);
+                let boardColumnTitle = document.createElement('div');
+                boardColumnTitle.classList.add('board-column-title');
+                boardColumnTitle.textContent = statuses[status];
+                let boardColumnContent = document.createElement("div");
+                boardColumnContent.classList.add('board-column-content');
+                board.appendChild(boardColumns);
+                boardColumns.appendChild(boardColumn);
+                boardColumn.appendChild(boardColumnTitle);
+                boardColumn.appendChild(boardColumnContent);
+            }
         }
+
+
     }
 
 };
