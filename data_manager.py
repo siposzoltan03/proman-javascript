@@ -50,17 +50,17 @@ def rename_card(cursor, card_id, new_name):
 
 
 @connection.connection_handler
-def add_new_board(cursor, board_name):
+def add_new_board(cursor):
     cursor.execute("""INSERT INTO boards (title)
-                      VALUES (%s)""", (board_name,))
+                      VALUES ('New board')""")
 
 
 @connection.connection_handler
-def add_new_card(cursor, board_id, card_name):
+def add_new_card(cursor, board_id):
     cursor.execute("""SELECT COALESCE(MAX(order_num) + 1, 0)AS next FROM cards
                               WHERE board_id = %s
                               AND status_id = 0""", (board_id,))
     order_num = cursor.fetchone()["next"]
 
     cursor.execute("""INSERT INTO cards (board_id, title, status_id, order_num)
-                      VALUES (%s, %s, 0, %s)""", (board_id, card_name, order_num))
+                      VALUES (%s, 'New card', 0, %s)""", (board_id, order_num))
