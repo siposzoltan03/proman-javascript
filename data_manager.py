@@ -77,3 +77,17 @@ def get_statuses(cursor):
     for element in statuses_data:
         statuses[element['id']] = element['title']
     return statuses
+
+
+@connection.connection_handler
+def get_next_board_name(cursor):
+    cursor.execute("""
+                  SELECT title
+                  FROM boards
+                  """)
+    boards = cursor.fetchall()
+    board_numbers = []
+    for board_title in boards:
+        board_numbers.append(int(board_title['title'][-1]))
+    return max(board_numbers) + 1
+
