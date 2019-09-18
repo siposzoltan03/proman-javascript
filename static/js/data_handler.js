@@ -101,7 +101,7 @@ export let dataHandler = {
         fetch(`${window.origin}/change-board-title`, {
             method: "PUT",
             credentials: "include",
-            body: JSON.stringify((titleAndId)),
+            body: JSON.stringify(titleAndId),
             cache: "no-cache",
             headers: new Headers({
                 "content-type": "application/json"
