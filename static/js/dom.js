@@ -19,9 +19,16 @@ export let dom = {
     },
     init: function () {
         // This function should run once, when the page is loaded.
+        let buttonAddBoard = document.querySelector('.board-add');
+        buttonAddBoard.addEventListener('click', function () {
+
+            dataHandler.createNewBoard(dom.loadBoards)
+        })
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
+        let boardContainer = document.querySelector('.board-container');
+        boardContainer.innerHTML = '';
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
@@ -86,9 +93,9 @@ export let dom = {
         let boardTitle = document.createElement('span');
         boardTitle.classList.add('board-title');
         boardTitle.textContent = boardRow.title;
-        let buttonAddBoard = document.createElement('button');
-        buttonAddBoard.classList.add('board-add');
-        buttonAddBoard.textContent = 'Add Card';
+        let buttonAddCard = document.createElement('button');
+        buttonAddCard.classList.add('board-add');
+        buttonAddCard.textContent = 'Add Card';
         let buttonToggleBoard = document.createElement('button');
         buttonToggleBoard.classList.add('board-toggle');
         let icon = document.createElement('i');
@@ -96,7 +103,7 @@ export let dom = {
         icon.classList.add('fa-chevron-down');
         section.appendChild(boardHeader);
         boardHeader.appendChild(boardTitle);
-        boardHeader.appendChild(buttonAddBoard);
+        boardHeader.appendChild(buttonAddCard);
         boardHeader.appendChild(buttonToggleBoard);
         buttonToggleBoard.appendChild(icon);
         //rename boards
@@ -122,9 +129,11 @@ export let dom = {
                 boardColumn.appendChild(boardColumnTitle);
                 boardColumn.appendChild(boardColumnContent);
             }
-            dom.getBoardIdsFromDocument();
+
         }
+        dom.getBoardIdsFromDocument();
     },
+
 
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
