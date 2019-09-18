@@ -29,8 +29,7 @@ export let dom = {
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
-        let statuses = dataHandler.getStatuses(dataHandler.retStatuses);
-        console.log(statuses);
+
         let boardContainer = document.querySelector('.board-container');
 
 
@@ -44,9 +43,10 @@ export let dom = {
 
         }
         dataHandler.getStatuses(this.createBoardColumns);
+
     },
     showCards: function (cards) {
-        for (let card of cards){
+        for (let card of cards) {
             let board = document.querySelector(`#board-${card["board_id"]}`);
             let status = board.querySelector(`.column-${card["status_id"]}`);
             let content = status.querySelector('.board-column-content');
@@ -71,9 +71,9 @@ export let dom = {
     loadCards: function (boardId) {
         dataHandler.getCardsByBoardId(boardId, this.showCards);
     },
-    getBoardIdsFromDocument: function() {
+    getBoardIdsFromDocument: function () {
         let boardIds = document.querySelectorAll('.board');
-        for(let rawBoardId of boardIds){
+        for (let rawBoardId of boardIds) {
             let boardId = rawBoardId.id.replace('board-', '');
             this.loadCards(boardId)
         }
@@ -120,9 +120,7 @@ export let dom = {
                 boardColumn.appendChild(boardColumnTitle);
                 boardColumn.appendChild(boardColumnContent);
             }
+            dom.getBoardIdsFromDocument();
         }
-
-
     }
-
 };

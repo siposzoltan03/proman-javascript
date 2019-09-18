@@ -6,8 +6,6 @@ function init() {
     dom.init();
     // loads the boards to the screen
     dom.loadBoards();
-    dom.getBoardIdsFromDocument()
-
 }
 
 init();
