@@ -20,7 +20,8 @@ h1{
     text-align: center;
     font-size: 4em;
     letter-spacing: 5px;
-    transform: scale(1.2, 1);
+    /*transform: scale(1.2, 1);*/
+
 }
 
 button{
@@ -30,6 +31,7 @@ button{
     font-size: 14px;
     font-family: sans-serif;
     padding: 4px 10px;
+    cursor: pointer;
 }
 
 .board-container{
@@ -88,6 +90,7 @@ section.board{
 
 .board-column-title{
     text-align: center;
+    text-transform: capitalize;
 }
 
 .card{
@@ -126,4 +129,21 @@ section.board{
 
 .card-title{
     padding-right: 16px;
+}
+
+.head{
+    display: inline-flex;
+    margin-left: 472.5px;
+    margin-right: 472.5px;
+    width: 960px;
+}
+.head button{
+    height: 50px;
+    vertical-align: bottom;
+    float: right;
+    width: 960px;
+    margin: auto;
+    float: left;
+    cursor: pointer;
+
 }
