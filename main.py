@@ -51,10 +51,10 @@ def add_card():
 @json_response
 def change_board_title():
     req = request.get_json()
-    print(req)
     new_title = req["newTitle"]
     board_id = req["boardId"]
     data_manager.rename_board(board_id, new_title)
+    return '', 204
 
 
 
