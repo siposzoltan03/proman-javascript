@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS public.cards CASCADE;
 DROP SEQUENCE IF EXISTS public.cards_id_seq;
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
-    board_id int REFERENCES boards(id),
+    board_id int REFERENCES boards(id) ON DELETE CASCADE,
     title text,
     status_id int REFERENCES statuses(id),
     order_num int
@@ -58,3 +58,38 @@ INSERT INTO cards VALUES (10, 2, 'planning', 2, 0);
 INSERT INTO cards VALUES (11, 2, 'done card 1', 3, 0);
 INSERT INTO cards VALUES (12, 2, 'done card 1', 3, 1);
 SELECT pg_catalog.setval('cards_id_seq', 12, true);
+
+DROP TABLE IF EXISTS public.board_statuses CASCADE;
+DROP SEQUENCE IF EXISTS public.board_statuses_id_seq;
+CREATE TABLE board_statuses
+(
+    id        SERIAL PRIMARY KEY,
+    board_id  int REFERENCES boards (id) ON DELETE CASCADE,
+    status_id int REFERENCES statuses (id)
+);
+INSERT INTO board_statuses VALUES (1, 1, 0);
+INSERT INTO board_statuses VALUES (2, 1, 1);
+INSERT INTO board_statuses VALUES (3, 1, 2);
+INSERT INTO board_statuses VALUES (4, 1, 3);
+INSERT INTO board_statuses VALUES (5, 2, 0);
+INSERT INTO board_statuses VALUES (6, 2, 1);
+INSERT INTO board_statuses VALUES (7, 2, 2);
+INSERT INTO board_statuses VALUES (8, 2, 3);
+SELECT pg_catalog.setval('board_statuses_id_seq', 12, true);
+
+CREATE OR REPLACE FUNCTION default_statuses()
+  RETURNS trigger AS $default_statuses$
+BEGIN
+   INSERT INTO board_statuses(board_id, status_id) VALUES(new.id, 0);
+   INSERT INTO board_statuses(board_id, status_id) VALUES(new.id, 1);
+   INSERT INTO board_statuses(board_id, status_id) VALUES(new.id, 2);
+   INSERT INTO board_statuses(board_id, status_id) VALUES(new.id, 3);
+   RETURN NEW;
+END;
+$default_statuses$ LANGUAGE plpgsql;
+
+CREATE TRIGGER add_statuses
+    AFTER INSERT
+    ON boards
+    FOR EACH ROW
+    EXECUTE PROCEDURE  default_statuses();
