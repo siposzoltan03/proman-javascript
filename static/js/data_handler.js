@@ -108,12 +108,6 @@ export let dataHandler = {
             headers: new Headers({
                 "content-type": "application/json"
             })
-        }).then(function (response) {
-            if (response.status !== 200) {
-            }
-            response.json().then(function () {
-            })
         })
-
     },
 };
