@@ -41,7 +41,7 @@ def get_statuses():
     return data_manager.get_statuses()
 
 
-@app.route('/add-card', methods='POST')
+@app.route('/add-card', methods=['POST'])
 def add_card():
     next_board_num = data_manager.get_next_board_name()
     data_manager.add_new_board('board' + next_board_num)
