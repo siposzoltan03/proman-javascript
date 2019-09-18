@@ -1,6 +1,8 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
 
+var display = {}
+
 export let dom = {
     _appendToElement: function (elementToExtend, textToAppend, prepend = false) {
         // function to append new DOM elements (represented by a string) to an existing DOM element
@@ -87,6 +89,7 @@ export let dom = {
 
     },
     createBoardHeader: function (boardRow) {
+        display[boardRow.id] = boardRow.is_active
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
         boardHeader.classList.add('board-header');
@@ -101,6 +104,11 @@ export let dom = {
         let icon = document.createElement('i');
         icon.classList.add('fas');
         icon.classList.add('fa-chevron-down');
+        if (boardRow.is_active) {
+            icon.addEventListener('click', dom.hideBoard);
+        } else {
+            icon.addEventListener('click', dom.displayBoard);
+        }
         section.appendChild(boardHeader);
         boardHeader.appendChild(boardTitle);
         boardHeader.appendChild(buttonAddCard);
@@ -113,8 +121,12 @@ export let dom = {
     createBoardColumns(statuses) {
         let boards = document.querySelectorAll('.board');
         for (let board of boards) {
+            let boardId = board.id.replace('board-', '');
             let boardColumns = document.createElement('div');
             boardColumns.classList.add('board-columns');
+            if (display[boardId] === false){
+            boardColumns.classList.add('hidden')
+            }
             for (let status in statuses) {
                 let boardColumn = document.createElement('div');
                 boardColumn.setAttribute('class', 'column-' + status);
@@ -146,5 +158,25 @@ export let dom = {
                 saveButton.addEventListener('click', dataHandler.submitNewTitle);
             });
         }
+    },
+    hideBoard: function(event) {
+        let target = event.currentTarget;
+        target.removeEventListener('click', dom.hideBoard);
+        target.addEventListener('click', dom.displayBoard);
+        let board = target.parentElement.parentElement.parentElement;
+        board.querySelector('.board-columns').classList.add('hidden');
+        let boardId = board.id.replace('board-', '');
+        let request = { id: boardId, status: false};
+        dataHandler.createBoardStatusRequest(request);
+    },
+    displayBoard: function(event) {
+        let target = event.target;
+        target.removeEventListener('click', dom.displayBoard);
+        target.addEventListener('click', dom.hideBoard);
+        let board = target.parentElement.parentElement.parentElement;
+        board.querySelector('.board-columns').classList.remove('hidden');
+        let boardId = board.id.replace('board-', '');
+        let request = { id: boardId, status: true};
+        dataHandler.createBoardStatusRequest(request);
     }
 };
