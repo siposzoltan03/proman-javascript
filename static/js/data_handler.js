@@ -63,22 +63,25 @@ export let dataHandler = {
     submitNewTitle: function submit_new_title(event) {
                         let header = event.currentTarget.parentElement;
                         let newTitle = header.querySelector(".new-board-title");
-                        console.log(newTitle.value)
+                        console.log(newTitle.value);
+                        if (newTitle.value === ''){
+                            newTitle.value = newTitle.getAttribute("value");
+                        }
                         let saveButton = header.querySelector(".title-save-button");
                         header.removeChild(newTitle);
                         header.removeChild(saveButton);
                         let boardTitle = document.createElement('span');
                         boardTitle.classList.add('board-title');
                         boardTitle.textContent = newTitle.value;
-                        dom.renameBoard();
                         header.prepend(boardTitle);
                         let unslicedBoardId = header.parentElement.id;
                         let boardId = unslicedBoardId.replace("board-","");
+
                         let titleAndId = {
                             newTitle: newTitle.value,
                             boardId: boardId
                         };
-
+                        dom.renameBoard();
                         fetch(`${window.origin}/change-board-title`, {
                             method: "PUT",
                             credentials: "include",
