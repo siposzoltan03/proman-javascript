@@ -34,11 +34,14 @@ def get_cards_for_board(board_id: int):
     return data_manager.get_cards_for_board(board_id)
 
 
-@app.route("/change-board-title", methods=['POST'])
+@app.route("/change-board-title", methods=['PUT'])
 @json_response
 def change_board_title():
     req = request.get_json()
     print(req)
+    new_title = req["newTitle"]
+    board_id = req["boardId"]
+    data_manager.rename_board(board_id, new_title)
     res = make_response(jsonify(req), 200)
     return res
 

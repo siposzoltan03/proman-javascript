@@ -58,12 +58,12 @@ export let dataHandler = {
                         let newTitle = document.querySelector("#new-board-title");
                         let boardId = "1";
                         let titleAndId = {
-                            newTitle: newTitle,
-                            boardId: boardId
+                            newTitle: newTitle.value,
+                            boardId: boardId //real board id needed
                         };
-                        console.log(titleAndId)
+                        console.log(titleAndId);
                         fetch(`${window.origin}/change-board-title`, {
-                            method: "POST",
+                            method: "PUT",
                             credentials: "include",
                             body: JSON.stringify((titleAndId)),
                             cache: "no-cache",

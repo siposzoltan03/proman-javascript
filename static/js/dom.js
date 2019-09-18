@@ -44,7 +44,7 @@ export let dom = {
             </ul>
         `;
 
-        this._appendToElement(document.querySelector('#boards'), outerHtml);
+        this._appendToElement(document.querySelector('.boards-container'), outerHtml);
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -58,12 +58,11 @@ export let dom = {
         let boardTitle = document.querySelectorAll('.board-title');
         for (let title of boardTitle) {
             title.addEventListener('dblclick', function(event) {
-
                 let original = event.currentTarget;
                 event.currentTarget.outerHTML =`<input type="text" id="new-board-title" placeholder="${original.innerHTML}" size="15" minlength="1">` +
                 `<button id="title-save-button">Save</button>`;
                 let saveButton = document.querySelector('#title-save-button');
-                saveButton.addEventListener('click', dataHandler.submitNewTitle());
+                saveButton.addEventListener('click', dataHandler.submitNewTitle);
             });
         }
 
