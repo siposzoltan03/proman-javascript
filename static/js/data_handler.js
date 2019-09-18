@@ -1,6 +1,6 @@
 // this object contains the functions which handle the data and its reading/writing
 // feel free to extend and change to fit your needs
-import { dom } from "./dom.js";
+import {dom} from "./dom.js";
 
 // (watch out: when you would like to use a property/function of an object from the
 // object itself then you must use the 'this' keyword before. For example: 'this._data' below)
@@ -77,43 +77,43 @@ export let dataHandler = {
         // creates new card, saves it and calls the callback function with its data
     },
     // here comes more features
-    submitNewTitle: function submit_new_title(event) {
-                        let header = event.currentTarget.parentElement;
-                        let newTitle = header.querySelector(".new-board-title");
-                        if (newTitle.value === ''){
-                            newTitle.value = newTitle.getAttribute("value");
-                        }
-                        let saveButton = header.querySelector(".title-save-button");
-                        header.removeChild(newTitle);
-                        header.removeChild(saveButton);
-                        let boardTitle = document.createElement('span');
-                        boardTitle.classList.add('board-title');
-                        boardTitle.textContent = newTitle.value;
-                        header.prepend(boardTitle);
-                        let unslicedBoardId = header.parentElement.id;
-                        let boardId = unslicedBoardId.replace("board-","");
+    submitNewTitle: function (event) {
+        let header = event.currentTarget.parentElement;
+        let newTitle = header.querySelector(".new-board-title");
+        if (newTitle.value === '') {
+            newTitle.value = newTitle.getAttribute("value");
+        }
+        let saveButton = header.querySelector(".title-save-button");
+        header.removeChild(newTitle);
+        header.removeChild(saveButton);
+        let boardTitle = document.createElement('span');
+        boardTitle.classList.add('board-title');
+        boardTitle.textContent = newTitle.value;
+        header.prepend(boardTitle);
+        let unslicedBoardId = header.parentElement.id;
+        let boardId = unslicedBoardId.replace("board-", "");
 
-                        let titleAndId = {
-                            newTitle: newTitle.value,
-                            boardId: boardId
-                        };
-                        dom.renameBoard();
-                        fetch(`${window.origin}/change-board-title`, {
-                            method: "PUT",
-                            credentials: "include",
-                            body: JSON.stringify((titleAndId)),
-                            cache: "no-cache",
-                            headers: new Headers({
-                                "content-type": "application/json"
-                            })
-                        }).then(function (response) {
-                            if (response.status !== 200){
-                                console.log(`RESPONSE STATUS WAS NOT 200: ${response.status}`)
-                            }
-                            response.json().then(function(){
-                                console.log("its working")
-                            })
-                        })
+        let titleAndId = {
+            newTitle: newTitle.value,
+            boardId: boardId
+        };
+        dom.renameBoard();
+        fetch(`${window.origin}/change-board-title`, {
+            method: "PUT",
+            credentials: "include",
+            body: JSON.stringify((titleAndId)),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        }).then(function (response) {
+            if (response.status !== 200) {
+                console.log(`RESPONSE STATUS WAS NOT 200: ${response.status}`)
+            }
+            response.json().then(function () {
+                console.log("its working")
+            })
+        })
 
-                    },
+    },
 };
