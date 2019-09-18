@@ -86,7 +86,7 @@ export let dataHandler = {
         let saveButton = header.querySelector(".title-save-button");
         header.removeChild(newTitle);
         header.removeChild(saveButton);
-        let boardTitle = document.createElement('span');
+        const boardTitle = document.createElement('span');
         boardTitle.classList.add('board-title');
         boardTitle.textContent = newTitle.value;
         header.prepend(boardTitle);
@@ -108,10 +108,8 @@ export let dataHandler = {
             })
         }).then(function (response) {
             if (response.status !== 200) {
-
             }
             response.json().then(function () {
-
             })
         })
 
