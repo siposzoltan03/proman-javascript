@@ -51,8 +51,17 @@ def rename_card(cursor, card_id, new_name):
 
 @connection.connection_handler
 def add_new_board(cursor):
+    cursor.execute("""
+                  SELECT max(id) as max_id
+                  FROM boards
+                  """)
+    max_id = int(cursor.fetchone()['max_id']) + 1
+
     cursor.execute("""INSERT INTO boards (title)
-                      VALUES ('New board')""")
+                      VALUES ('Board ' || %s)
+                      RETURNING id""", (max_id,))
+    _id = cursor.fetchone()
+    return _id['id']
 
 
 @connection.connection_handler

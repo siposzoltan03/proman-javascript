@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, jsonify, make_response
 from util import json_response
+
 
 import data_manager
 
@@ -41,10 +42,12 @@ def get_statuses():
     return data_manager.get_statuses()
 
 
-@app.route('/add-card', methods='POST')
-def add_card():
-    next_board_num = data_manager.get_next_board_name()
-    data_manager.add_new_board('board' + next_board_num)
+@app.route('/add-board', methods=['POST'])
+def add_board():
+    if request.method == 'POST':
+        # next_board_num = str(data_manager.get_next_board_name())
+        response = make_response(jsonify(data_manager.add_new_board()))
+        return response
 
 
 def main():
