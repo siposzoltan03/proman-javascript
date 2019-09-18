@@ -61,9 +61,9 @@ export let dataHandler = {
     },
     // here comes more features
     submitNewTitle: function submit_new_title(event) {
-                        //let newTitle = document.querySelector(".new-board-title");
                         let header = event.currentTarget.parentElement;
                         let newTitle = header.querySelector(".new-board-title");
+                        console.log(newTitle.value)
                         let saveButton = header.querySelector(".title-save-button");
                         header.removeChild(newTitle);
                         header.removeChild(saveButton);
@@ -91,8 +91,8 @@ export let dataHandler = {
                             if (response.status !== 200){
                                 console.log(`RESPONSE STATUS WAS NOT 200: ${response.status}`)
                             }
-                            response.json().then(function(data){
-                                console.log(data)
+                            response.json().then(function(){
+                                console.log("its working")
                             })
                         })
 

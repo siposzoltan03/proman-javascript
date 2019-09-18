@@ -49,8 +49,7 @@ def change_board_title():
     new_title = req["newTitle"]
     board_id = req["boardId"]
     data_manager.rename_board(board_id, new_title)
-    res = make_response(jsonify(req), 200)
-    return res
+
 
 
 def main():

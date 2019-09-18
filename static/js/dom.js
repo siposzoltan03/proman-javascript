@@ -129,15 +129,13 @@ export let dom = {
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
         for (let title of boardTitle) {
-            title.addEventListener('dblclick', function(event) {
+            title.addEventListener('dblclick', function (event) {
                 let original = event.currentTarget;
-                event.currentTarget.outerHTML =`<input type="text" class="new-board-title" placeholder="${original.innerHTML}" size="15" minlength="1">` +
-                `<button class="title-save-button">Save</button>`;
+                event.currentTarget.outerHTML = `<input type="text" class="new-board-title" value="${original.innerHTML}" size="15" minlength="1" >` +
+                    `<button class="title-save-button">Save</button>`;
                 let saveButton = document.querySelector('.title-save-button');
                 saveButton.addEventListener('click', dataHandler.submitNewTitle);
-
             });
         }
-
     }
 };
