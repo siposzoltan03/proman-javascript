@@ -80,7 +80,6 @@ export let dataHandler = {
     submitNewTitle: function submit_new_title(event) {
                         let header = event.currentTarget.parentElement;
                         let newTitle = header.querySelector(".new-board-title");
-                        console.log(newTitle.value);
                         if (newTitle.value === ''){
                             newTitle.value = newTitle.getAttribute("value");
                         }
