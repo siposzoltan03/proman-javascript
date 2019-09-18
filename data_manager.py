@@ -15,8 +15,8 @@ def verify_password(plain_text_password, hashed_password):
 
 
 @connection.connection_handler
-def get_table_data(cursor, table):  # _read_csv(file)
-    cursor.execute(sql.SQL("SELECT * FROM {}").format(sql.Identifier(table)))
+def get_table_data(cursor):  # _read_csv(file)
+    cursor.execute("SELECT * FROM boards ORDER BY id")
     return cursor.fetchall()
 
 
@@ -99,4 +99,11 @@ def get_next_board_name(cursor):
     for board_title in boards:
         board_numbers.append(int(board_title['title'][-1]))
     return max(board_numbers) + 1
+
+
+@connection.connection_handler
+def change_board_status(cursor, board_id, status):
+    cursor.execute("""UPDATE boards
+                      SET is_active = %s
+                      WHERE id = %s""", (status, board_id))
 
