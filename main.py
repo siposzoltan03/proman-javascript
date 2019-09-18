@@ -50,6 +50,17 @@ def add_board():
         return response
 
 
+@app.route("/change-board-title", methods=['PUT'])
+@json_response
+def change_board_title():
+    req = request.get_json()
+    new_title = req["newTitle"]
+    board_id = req["boardId"]
+    data_manager.rename_board(board_id, new_title)
+    return '', 204
+
+
+
 def main():
     app.run(debug=True)
 

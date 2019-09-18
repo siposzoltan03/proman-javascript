@@ -20,7 +20,7 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         let buttonAddBoard = document.querySelector('.board-add');
-        buttonAddBoard.addEventListener('click', function(){
+        buttonAddBoard.addEventListener('click', function () {
 
             dataHandler.createNewBoard(dom.loadBoards)
         })
@@ -106,6 +106,8 @@ export let dom = {
         boardHeader.appendChild(buttonAddCard);
         boardHeader.appendChild(buttonToggleBoard);
         buttonToggleBoard.appendChild(icon);
+        //rename boards
+        dom.renameBoard();
     },
 
     createBoardColumns(statuses) {
@@ -130,5 +132,19 @@ export let dom = {
 
         }
         dom.getBoardIdsFromDocument();
+    },
+
+
+    renameBoard: function () {
+        let boardTitle = document.querySelectorAll('.board-title');
+        for (let title of boardTitle) {
+            title.addEventListener('dblclick', function (event) {
+                let original = event.currentTarget;
+                event.currentTarget.outerHTML = `<input type="text" class="new-board-title" value="${original.textContent}" size="15" required minlength="1" >
+                    <button class="title-save-button">Save</button>`;
+                let saveButton = document.querySelector('.title-save-button');
+                saveButton.addEventListener('click', dataHandler.submitNewTitle);
+            });
+        }
     }
 };
