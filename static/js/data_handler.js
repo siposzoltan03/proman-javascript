@@ -1,5 +1,6 @@
 // this object contains the functions which handle the data and its reading/writing
 // feel free to extend and change to fit your needs
+import { dom } from "./dom.js";
 
 // (watch out: when you would like to use a property/function of an object from the
 // object itself then you must use the 'this' keyword before. For example: 'this._data' below)
@@ -37,12 +38,17 @@ export let dataHandler = {
     },
     getStatuses: function (callback) {
         // the statuses are retrieved and then the callback function is called with the statuses
+        this._api_get('get-statuses', callback);
+    },
+
+    retStatuses: function(statuses){
+        return statuses;
     },
     getStatus: function (statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
     },
     getCardsByBoardId: function (boardId, callback) {
-        // the cards are retrieved and then the callback function is called with the cards
+        this._api_get(`/get-cards/${boardId}`, callback)
     },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
@@ -54,14 +60,25 @@ export let dataHandler = {
         // creates new card, saves it and calls the callback function with its data
     },
     // here comes more features
-    submitNewTitle: function submit_new_title() {
-                        let newTitle = document.querySelector("#new-board-title");
-                        let boardId = "1";
+    submitNewTitle: function submit_new_title(event) {
+                        //let newTitle = document.querySelector(".new-board-title");
+                        let header = event.currentTarget.parentElement;
+                        let newTitle = header.querySelector(".new-board-title");
+                        let saveButton = header.querySelector(".title-save-button");
+                        header.removeChild(newTitle);
+                        header.removeChild(saveButton);
+                        let boardTitle = document.createElement('span');
+                        boardTitle.classList.add('board-title');
+                        boardTitle.textContent = newTitle.value;
+                        dom.renameBoard();
+                        header.prepend(boardTitle);
+                        let unslicedBoardId = header.parentElement.id;
+                        let boardId = unslicedBoardId.replace("board-","");
                         let titleAndId = {
                             newTitle: newTitle.value,
-                            boardId: boardId //real board id needed
+                            boardId: boardId
                         };
-                        console.log(titleAndId);
+
                         fetch(`${window.origin}/change-board-title`, {
                             method: "PUT",
                             credentials: "include",

@@ -64,3 +64,16 @@ def add_new_card(cursor, board_id, card_name):
 
     cursor.execute("""INSERT INTO cards (board_id, title, status_id, order_num)
                       VALUES (%s, %s, 0, %s)""", (board_id, card_name, order_num))
+
+
+@connection.connection_handler
+def get_statuses(cursor):
+    cursor.execute("""
+                   SELECT *
+                   FROM statuses
+                   """)
+    statuses_data = cursor.fetchall()
+    statuses = {}
+    for element in statuses_data:
+        statuses[element['id']] = element['title']
+    return statuses

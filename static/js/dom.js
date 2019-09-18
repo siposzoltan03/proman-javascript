@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     _appendToElement: function (elementToExtend, textToAppend, prepend = false) {
@@ -22,7 +22,7 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
@@ -30,44 +30,114 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-        let boardList = '';
+        let boardContainer = document.querySelector('.board-container');
 
-        for(let board of boards){
-            boardList += `
-                <li>${board.title}</li>
-            `;
+
+        for (let board of boards) {
+            let section = document.createElement('section');
+            section.classList.add('board');
+            section.setAttribute('id', 'board-' + board.id);
+            boardContainer.appendChild(section);
+
+            this.createBoardHeader(board);
+
         }
+        dataHandler.getStatuses(this.createBoardColumns);
 
-        const outerHtml = `
-            <ul class="board-container">
-                ${boardList}
-            </ul>
-        `;
-
-        this._appendToElement(document.querySelector('.boards-container'), outerHtml);
-    },
-    loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
     },
     showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
+        for (let card of cards) {
+            let board = document.querySelector(`#board-${card["board_id"]}`);
+            let status = board.querySelector(`.column-${card["status_id"]}`);
+            let content = status.querySelector('.board-column-content');
+            let newCard = document.createElement('div');
+            newCard.setAttribute('class', 'card');
+            let deleteButton = document.createElement('div');
+            deleteButton.setAttribute('class', 'card-remove');
+            let trashIcon = document.createElement('i');
+            trashIcon.classList.add('fas');
+            trashIcon.classList.add('fa-trash-alt');
+            deleteButton.appendChild(trashIcon);
+            newCard.appendChild(deleteButton);
+            let cardTitle = document.createElement('div');
+            cardTitle.setAttribute('class', 'card-title');
+            cardTitle.textContent = card["title"];
+            cardTitle.setAttribute('data-id', card["id"]);
+            newCard.appendChild(cardTitle);
+            content.appendChild(newCard);
+
+        }
     },
-    // here comes more features
+    loadCards: function (boardId) {
+        dataHandler.getCardsByBoardId(boardId, this.showCards);
+    },
+    getBoardIdsFromDocument: function () {
+        let boardIds = document.querySelectorAll('.board');
+        for (let rawBoardId of boardIds) {
+            let boardId = rawBoardId.id.replace('board-', '');
+            this.loadCards(boardId)
+        }
+
+    },
+    createBoardHeader: function (boardRow) {
+        let section = document.querySelector('#board-' + boardRow.id);
+        let boardHeader = document.createElement('div');
+        boardHeader.classList.add('board-header');
+        let boardTitle = document.createElement('span');
+        boardTitle.classList.add('board-title');
+        boardTitle.textContent = boardRow.title;
+        let buttonAddBoard = document.createElement('button');
+        buttonAddBoard.classList.add('board-add');
+        buttonAddBoard.textContent = 'Add Card';
+        let buttonToggleBoard = document.createElement('button');
+        buttonToggleBoard.classList.add('board-toggle');
+        let icon = document.createElement('i');
+        icon.classList.add('fas');
+        icon.classList.add('fa-chevron-down');
+        section.appendChild(boardHeader);
+        boardHeader.appendChild(boardTitle);
+        boardHeader.appendChild(buttonAddBoard);
+        boardHeader.appendChild(buttonToggleBoard);
+        buttonToggleBoard.appendChild(icon);
+        //rename boards
+        dom.renameBoard();
+    },
+
+    createBoardColumns(statuses) {
+        let boards = document.querySelectorAll('.board');
+        for (let board of boards) {
+            let boardColumns = document.createElement('div');
+            boardColumns.classList.add('board-columns');
+            for (let status in statuses) {
+                let boardColumn = document.createElement('div');
+                boardColumn.setAttribute('class', 'column-' + status);
+                boardColumn.classList.add('board-column');
+                let boardColumnTitle = document.createElement('div');
+                boardColumnTitle.classList.add('board-column-title');
+                boardColumnTitle.textContent = statuses[status];
+                let boardColumnContent = document.createElement("div");
+                boardColumnContent.classList.add('board-column-content');
+                board.appendChild(boardColumns);
+                boardColumns.appendChild(boardColumn);
+                boardColumn.appendChild(boardColumnTitle);
+                boardColumn.appendChild(boardColumnContent);
+            }
+            dom.getBoardIdsFromDocument();
+        }
+    },
+
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
         for (let title of boardTitle) {
             title.addEventListener('dblclick', function(event) {
                 let original = event.currentTarget;
-                event.currentTarget.outerHTML =`<input type="text" id="new-board-title" placeholder="${original.innerHTML}" size="15" minlength="1">` +
-                `<button id="title-save-button">Save</button>`;
-                let saveButton = document.querySelector('#title-save-button');
+                event.currentTarget.outerHTML =`<input type="text" class="new-board-title" placeholder="${original.innerHTML}" size="15" minlength="1">` +
+                `<button class="title-save-button">Save</button>`;
+                let saveButton = document.querySelector('.title-save-button');
                 saveButton.addEventListener('click', dataHandler.submitNewTitle);
+
             });
         }
 
     }
 };
-
-
-
