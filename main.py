@@ -13,7 +13,6 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
-    print(data_manager.get_cards_for_board('1'))
     return render_template('design.html')
 
 
