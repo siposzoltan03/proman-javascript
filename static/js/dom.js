@@ -131,7 +131,7 @@ export let dom = {
         for (let title of boardTitle) {
             title.addEventListener('dblclick', function (event) {
                 let original = event.currentTarget;
-                event.currentTarget.outerHTML = `<input type="text" class="new-board-title" value="${original.innerHTML}" size="15" required minlength="1" >` +
+                event.currentTarget.outerHTML = `<input type="text" class="new-board-title" value="${original.textContent}" size="15" required minlength="1" >` +
                     `<button class="title-save-button">Save</button>`;
                 let saveButton = document.querySelector('.title-save-button');
                 saveButton.addEventListener('click', dataHandler.submitNewTitle);
