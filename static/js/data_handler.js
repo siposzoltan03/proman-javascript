@@ -108,10 +108,10 @@ export let dataHandler = {
             })
         }).then(function (response) {
             if (response.status !== 200) {
-                console.log(`RESPONSE STATUS WAS NOT 200: ${response.status}`)
+
             }
             response.json().then(function () {
-                console.log("its working")
+
             })
         })
 
