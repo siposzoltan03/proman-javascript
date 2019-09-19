@@ -13,11 +13,12 @@ DROP TABLE IF EXISTS public.boards CASCADE;
 DROP SEQUENCE IF EXISTS public.boards_id_seq;
 CREATE TABLE boards (
     id serial PRIMARY KEY,
-    title text
-    -- user_id int REFERENCES users(id),
+    title text,
+    is_active bool DEFAULT TRUE
+    -- user_id int REFERENCES users(id)
 );
-INSERT INTO boards VALUES (1, 'Board 1');
-INSERT INTO boards VALUES (2, 'Board 2');
+INSERT INTO boards VALUES (1, 'Board 1', TRUE);
+INSERT INTO boards VALUES (2, 'Board 2', FALSE);
 -- add user id after implementing login system!
 SELECT pg_catalog.setval('boards_id_seq', 2, true);
 
