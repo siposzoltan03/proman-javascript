@@ -42,7 +42,6 @@ def get_cards_for_board(board_id):
 
 @app.route("/get-statuses/<board_id>")
 def get_statuses(board_id):
-    print(data_manager.get_board_statuses(board_id))
     return make_response(jsonify(data_manager.get_board_statuses(board_id)), 200)
 
 
@@ -82,13 +81,11 @@ def add_new_column():
     new_title = req['newTitle']
     if new_title.lower() in data_manager.get_statuses().values():
         status_id = data_manager.get_status_id_by_title(new_title.lower())[0]['id']
-        data_manager.add_new_board_status(board_id, status_id)
+        return data_manager.add_new_board_status(board_id, status_id)
     else:
         data_manager.add_new_status(new_title.lower())
         status_id = data_manager.get_status_id_by_title(new_title.lower())[0]['id']
-        data_manager.add_new_board_status(board_id, status_id)
-
-    return '', 204
+        return data_manager.add_new_board_status(board_id, status_id)
 
 
 def main():
