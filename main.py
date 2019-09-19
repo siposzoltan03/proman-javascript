@@ -88,6 +88,13 @@ def add_new_column():
         return data_manager.add_new_board_status(board_id, status_id)
 
 
+@app.route("/card/<int:id>", methods=['PATCH'])
+def patch_card(id):
+    req = request.get_json()
+    data_manager.rename_card(id, req['data']['title'])
+    return '', 204
+
+
 def main():
     app.run(debug=True)
 

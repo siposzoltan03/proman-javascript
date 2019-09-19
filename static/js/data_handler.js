@@ -38,6 +38,24 @@ export let dataHandler = {
             })
 
     },
+    _api_patch: function (url, data, callback) {
+        // it is not called from outside
+        // sends the data to the API, and calls callback function
+        fetch(url, {
+            method: 'PATCH',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data
+            })
+        })
+            .then((res) => {
+                callback(res)
+            });
+
+    },
     init: function () {
     },
     getBoards: function (callback) {
@@ -156,5 +174,7 @@ export let dataHandler = {
             });
     },
 
-
+    updateCardTitle: function(id, title, callback) {
+        this._api_patch(`${window.origin}/card/${id}`, {title}, callback);
+    }
 };

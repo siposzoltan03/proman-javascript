@@ -1,5 +1,7 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+import {ENTER_KEY, ESC_KEY} from "./constants.js";
+import {NUMPAD_ENTER_KEY} from "./constants.js";
 
 var display = {}
 
@@ -33,7 +35,9 @@ export let dom = {
             dataHandler.addColumn();
             let modal = document.querySelector('#modal');
             modal.classList.add('hidden');
-        })
+        });
+
+        this.attachEventListenerForCardRename();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -91,7 +95,7 @@ export let dom = {
 
 
     createBoardHeader: function (boardRow) {
-        display[boardRow.id] = boardRow.is_active;
+        display[boardRow.id] = boardRow.is_active
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
         boardHeader.classList.add('board-header');
@@ -172,6 +176,54 @@ export let dom = {
             });
         }
     },
+
+    attachEventListenerForCardRename: () => {
+        document.body.addEventListener('dblclick', (dblClickEvent) => {
+            const cardTitleHolder = dblClickEvent.target;
+
+            if (cardTitleHolder.classList.contains('card-title')) {
+                const oldTitle = cardTitleHolder.textContent;
+
+                const inputElement = document.createElement('input');
+                inputElement.value = oldTitle;
+                inputElement.classList.add('card-title-edit');
+                inputElement.addEventListener('keyup', (keyboardEvent) => {
+                    switch (keyboardEvent.code) {
+                        case ENTER_KEY:
+                        case NUMPAD_ENTER_KEY:
+                            dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            break;
+                        case ESC_KEY:
+                            dom.cancelCardTitleEdit(cardTitleHolder, oldTitle);
+                            break;
+                    }
+                });
+                inputElement.addEventListener('blur', () => {
+                    setTimeout(() => {
+                        if (cardTitleHolder.children.length > 0) {
+                            dom.cancelCardTitleEdit(cardTitleHolder, oldTitle);
+                        }
+                    });
+                });
+
+                cardTitleHolder.textContent = '';
+                cardTitleHolder.append(inputElement);
+                inputElement.focus();
+                inputElement.setSelectionRange(0, inputElement.value.length)
+            }
+        });
+    },
+
+    cancelCardTitleEdit: (cardTitleHolder, oldTitle) => {
+        cardTitleHolder.innerHTML = oldTitle;
+    },
+
+    saveCardTitle: (id, newTitle, cardTitleHolder) => {
+        dataHandler.updateCardTitle(id, newTitle, () => {
+            cardTitleHolder.innerHTML = newTitle;
+        });
+    },
+
     hideBoard: function (event) {
         let target = event.currentTarget;
         target.removeEventListener('click', dom.hideBoard);

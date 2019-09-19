@@ -148,6 +148,13 @@ section.board{
     text-align: right;
 
 }
+ .hidden {
+     display: none;
+ }
+
+ .card-title-edit {
+     outline: none;
+ }
 .hidden {
     display: none;
 }
