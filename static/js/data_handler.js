@@ -131,9 +131,7 @@ export let dataHandler = {
 
     addColumn: function (event) {
         const boardId = event.target.parentElement.parentElement.id.replace("board-", "")
-        console.log(boardId);
         const columnName = prompt("please enter the column name");
-        console.log(columnName);
         let idAndTitle = {
             id: boardId,
             newTitle: columnName
