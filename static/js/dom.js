@@ -107,7 +107,11 @@ export let dom = {
         buttonAddCard.textContent = 'Add Card';
         let buttonAddColumn = document.createElement("button");
         buttonAddColumn.classList.add('column-add');
-        buttonAddColumn.textContent = 'Add Column';
+        let iconAdd = document.createElement('i');
+        buttonAddColumn.appendChild(iconAdd);
+        iconAdd.classList.add('fas');
+        iconAdd.classList.add('fa-plus');
+        // buttonAddColumn.textContent = 'Add Column';
         buttonAddColumn.addEventListener('click', dom.openModal);
         let buttonToggleBoard = document.createElement('button');
         buttonToggleBoard.classList.add('board-toggle');

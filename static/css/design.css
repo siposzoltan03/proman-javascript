@@ -63,7 +63,7 @@ section.board{
 
 .board-toggle{
     float: right;
-    margin: 13px;
+    margin: 13px 13px 13px 5px;
 }
 
 .board-columns{
@@ -182,5 +182,10 @@ section.board{
     margin: auto;
     padding: 25px 10px;
     text-align: center;
+}
+
+.column-add {
+   float: right;
+    margin: 13px 0px ;
 }
 
