@@ -189,3 +189,11 @@ section.board{
     margin: 13px 0px ;
 }
 
+ .dragging {
+     opacity: 0.5;
+ }
+
+ .dropzone {
+     border: 1px dashed black;
+     background-color: cyan;
+ }
