@@ -40,11 +40,10 @@ def get_cards_for_board(board_id):
     return data_manager.get_cards_for_board(board_id)
 
 
-@app.route("/get-statuses")  # /<board_id>
-@json_response
-def get_statuses():  # (board_id)
-    #  data_manager.get_board_statuses(board_id)
-    return data_manager.get_statuses()
+@app.route("/get-statuses/<board_id>")
+def get_statuses(board_id):
+    print(data_manager.get_board_statuses(board_id))
+    return make_response(jsonify(data_manager.get_board_statuses(board_id)), 200)
 
 
 @app.route('/add-board', methods=['POST'])

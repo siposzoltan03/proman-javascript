@@ -104,6 +104,7 @@ def get_next_board_name(cursor):
         board_numbers.append(int(board_title['title'][-1]))
     return max(board_numbers) + 1
 
+
 @connection.connection_handler
 def get_board_by_id(cursor, board_id):
     cursor.execute("""
@@ -111,7 +112,7 @@ def get_board_by_id(cursor, board_id):
                    FROM boards
                    WHERE id = %s
                    """, board_id)
-    board = cursor.fetchone()
+    board = cursor.fetchall()
     return board
 
 
@@ -131,7 +132,8 @@ def get_board_statuses(cursor, board_id):
     statuses_data = cursor.fetchall()
     statuses = {}
     for element in statuses_data:
-        statuses[element['id']] = element['title']
+        statuses[str(element['id'])] = element['title']
+    statuses['id'] = str(board_id)
     return statuses
 
 
