@@ -78,17 +78,14 @@ def change_board_status():
 @json_response
 def add_new_column():
     req = request.get_json()
-    print(req)
     board_id = req['id']
     new_title = req['newTitle']
     if new_title.lower() in data_manager.get_statuses().values():
         status_id = data_manager.get_status_id_by_title(new_title.lower())[0]['id']
-        print(status_id)
         data_manager.add_new_board_status(board_id, status_id)
     else:
         data_manager.add_new_status(new_title.lower())
         status_id = data_manager.get_status_id_by_title(new_title.lower())[0]['id']
-        print(status_id)
         data_manager.add_new_board_status(board_id, status_id)
 
     return '', 204
