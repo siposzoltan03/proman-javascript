@@ -25,6 +25,17 @@ export let dom = {
         // This function should run once, when the page is loaded.
         let buttonAddBoard = document.querySelector('.board-add');
         buttonAddBoard.addEventListener('click', dom.loadNewBoard);
+        let modalCloseButton = document.querySelector('#close-button');
+        modalCloseButton.addEventListener('click', function () {
+            let modal = document.querySelector('#modal');
+            modal.classList.add('hidden');
+        });
+        let submitButton = document.querySelector('#submit-button');
+        submitButton.addEventListener('click', function () {
+            dataHandler.addColumn();
+            let modal = document.querySelector('#modal');
+            modal.classList.add('hidden');
+        });
 
         this.attachEventListenerForCardRename();
     },
@@ -81,13 +92,8 @@ export let dom = {
     loadCards: function (boardId) {
         dataHandler.getCardsByBoardId(boardId, dom.showCards);
     },
-    getBoardIdsFromDocument: function (boardId) {
-        let rawBoardId = document.querySelector(`#board-${boardId}`);
-        rawBoardId.id.replace('board-', '');
-        dom.loadCards(boardId)
 
 
-    },
     createBoardHeader: function (boardRow) {
         display[boardRow.id] = boardRow.is_active
         let section = document.querySelector('#board-' + boardRow.id);
@@ -102,6 +108,7 @@ export let dom = {
         let buttonAddColumn = document.createElement("button");
         buttonAddColumn.classList.add('column-add');
         buttonAddColumn.textContent = 'Add Column';
+        buttonAddColumn.addEventListener('click', dom.openModal);
         let buttonToggleBoard = document.createElement('button');
         buttonToggleBoard.classList.add('board-toggle');
         let icon = document.createElement('i');
@@ -116,11 +123,10 @@ export let dom = {
         boardHeader.appendChild(boardTitle);
         boardHeader.appendChild(buttonAddCard);
         boardHeader.appendChild(buttonToggleBoard);
-        boardHeader.appendChild(buttonAddColumn)
+        boardHeader.appendChild(buttonAddColumn);
         buttonToggleBoard.appendChild(icon);
         //rename boards and add new columns
         dom.renameBoard();
-        dom.addNewColumn();
     },
 
     createBoardColumns(statuses) {
@@ -132,6 +138,13 @@ export let dom = {
         if (display[boardId] === false) {
             boardColumns.classList.add('hidden');
         }
+
+        dom.addStatus(statuses, board, boardColumns);
+
+        dom.loadCards(statuses.id)
+    },
+
+    addStatus: function (statuses, board, boardColumns) {
         for (let status in statuses) {
             if (status !== 'id') {
                 let boardColumn = document.createElement('div');
@@ -149,7 +162,7 @@ export let dom = {
 
             }
         }
-        dom.loadCards(statuses.id)
+        // dom.loadCards(statuses.id)
     },
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
@@ -236,11 +249,9 @@ export let dom = {
             dom.showBoards(boards);
         });
     },
-    addNewColumn: function(event){
-        let addColumnButtons = document.querySelectorAll('.column-add')
-        for (let addColumnButton of addColumnButtons) {
-            addColumnButton.addEventListener('click', dataHandler.addColumn)
-        }
-
-    },
+    openModal: function (event) {
+        document.querySelector('#modal').classList.remove('hidden');
+        let boardId = event.target.parentElement.parentElement.id.replace('board-', '');
+        document.querySelector('#board-id').value = boardId;
+    }
 };

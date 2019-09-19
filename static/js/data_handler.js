@@ -147,9 +147,10 @@ export let dataHandler = {
         })
     },
 
-    addColumn: function (event) {
-        const boardId = event.target.parentElement.parentElement.id.replace("board-", "")
-        const columnName = prompt("please enter the column name");
+    addColumn: function () {
+        const columnName = document.querySelector('#col-name').value;
+        let boardId = document.querySelector('#board-id').value;
+        document.querySelector('#col-name').value = '';
         let idAndTitle = {
             id: boardId,
             newTitle: columnName
@@ -163,6 +164,14 @@ export let dataHandler = {
                 "content-type": "application/json"
             })
         })
+            .then(response =>
+                response.json()
+            )
+            .then(json_response => {
+                let board = document.querySelector(`#board-${boardId}`);
+                let boardColumns = board.querySelector('.board-columns');
+                dom.addStatus(json_response, board, boardColumns);
+            });
     },
 
     updateCardTitle: function(id, title, callback) {

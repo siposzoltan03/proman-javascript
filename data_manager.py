@@ -157,9 +157,20 @@ def add_new_board_status(cursor, board_id, status_id):
     max_id = int(cursor.fetchone()['max_id']) + 1
 
     cursor.execute("""
-                   INSERT INTO board_statuses (id, board_id, status_id )
-                   VALUES (%s, %s, %s)
-                   """, (max_id, board_id, status_id))
+                   INSERT INTO board_statuses (board_id, status_id )
+                   VALUES (%s, %s)
+                   """, (board_id, status_id))
+    cursor.execute("""
+                   SELECT statuses.id, statuses.title
+                   FROM  statuses
+                   JOIN board_statuses
+                    ON statuses.id = board_statuses.status_id
+                    WHERE board_statuses.id = %s
+                   """, (max_id,))
+    last_status = cursor.fetchone()
+    response = {str(last_status['id']): last_status['title'], 'id': board_id}
+    return response
+
 
 @connection.connection_handler
 def add_new_status(cursor, status):
@@ -170,6 +181,6 @@ def add_new_status(cursor, status):
     max_id = int(cursor.fetchone()['max_id']) + 1
 
     cursor.execute("""
-                   INSERT INTO statuses (id, title)
-                   VALUES (%s, %s)
-                   """, (max_id, status))
+                   INSERT INTO statuses (title)
+                   VALUES (%s)
+                   """, (status,))
