@@ -62,7 +62,10 @@ def add_new_board(cursor):
                       VALUES ('Board ' || %s)
                       RETURNING id""", (max_id,))
     _id = cursor.fetchone()
-    return _id['id']
+    board_id = _id['id']
+    cursor.execute("""SELECT * FROM boards
+                      WHERE id = %s""", (board_id,))
+    return cursor.fetchall()
 
 
 @connection.connection_handler

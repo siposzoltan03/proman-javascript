@@ -50,9 +50,9 @@ export let dataHandler = {
             callback(response);
         });
     },
-    getBoard: function (boardId, callback) {
+    getNewBoard: function (callback) {
         // the board is retrieved and then the callback function is called with the board
-        this._api_get(`/get-board/${boardId}`,(response) => {
+        this._api_post('/add-board', '',(response) => {
             this._data = response;
             callback(response)
         });

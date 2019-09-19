@@ -48,11 +48,11 @@ def get_statuses():  # (board_id)
 
 
 @app.route('/add-board', methods=['POST'])
+@json_response
 def add_board():
     if request.method == 'POST':
         # next_board_num = str(data_manager.get_next_board_name())
-        response = make_response(jsonify(data_manager.add_new_board()))
-        return response
+        return data_manager.add_new_board()
 
 
 @app.route("/change-board-title", methods=['PUT'])

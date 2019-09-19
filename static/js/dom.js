@@ -22,15 +22,12 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         let buttonAddBoard = document.querySelector('.board-add');
-        buttonAddBoard.addEventListener('click', function () {
-
-            dataHandler.createNewBoard(dom.loadBoards)
-        })
+        buttonAddBoard.addEventListener('click', dom.loadNewBoard)
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        let boardContainer = document.querySelector('.board-container');
-        boardContainer.innerHTML = '';
+        //let boardContainer = document.querySelector('.board-container');
+        //boardContainer.innerHTML = '';
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
@@ -178,5 +175,10 @@ export let dom = {
         let boardId = board.id.replace('board-', '');
         let request = { id: boardId, status: true};
         dataHandler.createBoardStatusRequest(request);
-    }
+    },
+    loadNewBoard: function() {
+        dataHandler.getNewBoard(function (boards) {
+            dom.showBoards(boards);
+        });
+    },
 };
