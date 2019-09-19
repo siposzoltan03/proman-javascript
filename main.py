@@ -91,6 +91,13 @@ def add_new_column():
     return '', 204
 
 
+@app.route("/card/<int:id>", methods=['PATCH'])
+def patch_card(id):
+    req = request.get_json()
+    data_manager.rename_card(id, req['data']['title'])
+    return '', 204
+
+
 def main():
     app.run(debug=True)
 

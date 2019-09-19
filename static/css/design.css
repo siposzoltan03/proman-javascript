@@ -151,3 +151,7 @@ section.board{
  .hidden {
      display: none;
  }
+
+ .card-title-edit {
+     outline: none;
+ }
