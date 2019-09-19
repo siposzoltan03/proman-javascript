@@ -51,6 +51,13 @@ def rename_card(cursor, card_id, new_name):
 
 
 @connection.connection_handler
+def change_card_status(cursor, card_id, status_id):
+    cursor.execute("""UPDATE cards
+                      SET status_id = %s
+                      WHERE id = %s""", (status_id, card_id))
+
+
+@connection.connection_handler
 def add_new_board(cursor):
     cursor.execute("""
                   SELECT max(id) as max_id

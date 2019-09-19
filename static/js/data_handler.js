@@ -176,5 +176,9 @@ export let dataHandler = {
 
     updateCardTitle: function(id, title, callback) {
         this._api_patch(`${window.origin}/card/${id}`, {title}, callback);
+    },
+
+    updateCardStatus: function(id, statusId, callback) {
+        this._api_patch(`${window.origin}/card/${id}`, {statusId}, callback);
     }
 };

@@ -164,6 +164,7 @@ export let dom = {
             if (status !== 'id') {
                 let boardColumn = document.createElement('div');
                 boardColumn.setAttribute('class', 'column-' + status);
+                boardColumn.setAttribute('data-statusid', status);
                 boardColumn.classList.add('board-column');
                 let boardColumnTitle = document.createElement('div');
                 boardColumnTitle.classList.add('board-column-title');
@@ -189,6 +190,9 @@ export let dom = {
                     const card = document.querySelector(`[data-id="${cardId}"`).parentElement;
                     boardColumnContent.appendChild(card);
                     boardColumnContent.classList.remove('dropzone');
+
+                    const statusId = boardColumnContent.parentElement.dataset.statusid;
+                    dataHandler.updateCardStatus(cardId, statusId);
                 })
             }
         }
