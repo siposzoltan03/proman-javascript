@@ -26,6 +26,11 @@ def get_boards():
     return data_manager.get_table_data('boards')
 
 
+@app.route("/get-board/<board_id>")
+def get_board(board_id):
+    return data_manager.get_board_by_id(board_id)
+
+
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id):

@@ -100,3 +100,13 @@ def get_next_board_name(cursor):
         board_numbers.append(int(board_title['title'][-1]))
     return max(board_numbers) + 1
 
+@connection.connection_handler
+def get_board_by_id(cursor, board_id):
+    cursor.execute("""
+                   SELECT *
+                   FROM boards
+                   WHERE id = %s
+                   """, board_id)
+    board = cursor.fetchone()
+    return board
+
