@@ -31,7 +31,8 @@ def get_card_status(cursor, status_id):
 @connection.connection_handler
 def get_cards_for_board(cursor, board_id):
     cursor.execute("""SELECT * FROM cards
-                      WHERE board_id = %s""", (board_id,))
+                      WHERE board_id = %s
+                      ORDER BY order_num""", (board_id,))
     return cursor.fetchall()
 
 
@@ -116,4 +117,18 @@ def change_board_status(cursor, board_id, status):
     cursor.execute("""UPDATE boards
                       SET is_active = %s
                       WHERE id = %s""", (status, board_id))
+
+
+@connection.connection_handler
+def get_board_statuses(cursor, board_id):
+    cursor.execute("""SELECT s.id, title FROM statuses s
+                      INNER JOIN board_statuses bs ON
+                      s.id = bs.status_id
+                      WHERE bs.board_id = %s""", (board_id,))
+    statuses_data = cursor.fetchall()
+    statuses = {}
+    for element in statuses_data:
+        statuses[element['id']] = element['title']
+    return statuses
+
 
