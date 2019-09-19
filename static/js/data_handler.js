@@ -50,9 +50,9 @@ export let dataHandler = {
             callback(response);
         });
     },
-    getBoard: function (boardId, callback) {
+    getNewBoard: function (callback) {
         // the board is retrieved and then the callback function is called with the board
-        this._api_get(`/get-board/${boardId}`, (response) => {
+        this._api_post('/add-board', '',(response) => {
             this._data = response;
             callback(response)
         });
@@ -67,6 +67,9 @@ export let dataHandler = {
     },
     getStatus: function (statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
+    },
+    getStatusByBoard: function(boardId, callback){
+      dataHandler._api_get(`/get-statuses/${boardId}`, callback)
     },
     getCardsByBoardId: function (boardId, callback) {
         this._api_get(`/get-cards/${boardId}`, callback)
@@ -114,7 +117,7 @@ export let dataHandler = {
             })
         })
     },
-    createBoardStatusRequest: function (req) {
+    createBoardStatusRequest: function(req){
         fetch(`${window.origin}/change-board-status`, {
             method: "PUT",
             credentials: "include",

@@ -62,7 +62,10 @@ def add_new_board(cursor):
                       VALUES ('Board ' || %s)
                       RETURNING id""", (max_id,))
     _id = cursor.fetchone()
-    return _id['id']
+    board_id = _id['id']
+    cursor.execute("""SELECT * FROM boards
+                      WHERE id = %s""", (board_id,))
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -109,7 +112,7 @@ def get_board_by_id(cursor, board_id):
                    FROM boards
                    WHERE id = %s
                    """, board_id)
-    board = cursor.fetchone()
+    board = cursor.fetchall()
     return board
 
 
@@ -129,7 +132,8 @@ def get_board_statuses(cursor, board_id):
     statuses_data = cursor.fetchall()
     statuses = {}
     for element in statuses_data:
-        statuses[element['id']] = element['title']
+        statuses[str(element['id'])] = element['title']
+    statuses['id'] = str(board_id)
     return statuses
 
 

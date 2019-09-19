@@ -22,15 +22,12 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         let buttonAddBoard = document.querySelector('.board-add');
-        buttonAddBoard.addEventListener('click', function () {
-
-            dataHandler.createNewBoard(dom.loadBoards)
-        })
+        buttonAddBoard.addEventListener('click', dom.loadNewBoard)
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        let boardContainer = document.querySelector('.board-container');
-        boardContainer.innerHTML = '';
+        //let boardContainer = document.querySelector('.board-container');
+        //boardContainer.innerHTML = '';
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
@@ -49,9 +46,9 @@ export let dom = {
             boardContainer.appendChild(section);
 
             this.createBoardHeader(board);
-
+            dataHandler.getStatusByBoard(board.id, dom.createBoardColumns);
         }
-        dataHandler.getStatuses(this.createBoardColumns);
+
 
     },
     showCards: function (cards) {
@@ -78,14 +75,13 @@ export let dom = {
         }
     },
     loadCards: function (boardId) {
-        dataHandler.getCardsByBoardId(boardId, this.showCards);
+        dataHandler.getCardsByBoardId(boardId, dom.showCards);
     },
-    getBoardIdsFromDocument: function () {
-        let boardIds = document.querySelectorAll('.board');
-        for (let rawBoardId of boardIds) {
-            let boardId = rawBoardId.id.replace('board-', '');
-            this.loadCards(boardId)
-        }
+    getBoardIdsFromDocument: function (boardId) {
+        let rawBoardId = document.querySelector(`#board-${boardId}`);
+        rawBoardId.id.replace('board-', '');
+        dom.loadCards(boardId)
+
 
     },
     createBoardHeader: function (boardRow) {
@@ -124,15 +120,16 @@ export let dom = {
     },
 
     createBoardColumns(statuses) {
-        let boards = document.querySelectorAll('.board');
-        for (let board of boards) {
-            let boardId = board.id.replace('board-', '');
-            let boardColumns = document.createElement('div');
-            boardColumns.classList.add('board-columns');
-            if (display[boardId] === false){
-            boardColumns.classList.add('hidden')
-            }
-            for (let status in statuses) {
+        let board = document.querySelector(`#board-${statuses.id}`);
+
+        let boardId = board.id.replace('board-', '');
+        let boardColumns = document.createElement('div');
+        boardColumns.classList.add('board-columns');
+        if (display[boardId] === false) {
+            boardColumns.classList.add('hidden');
+        }
+        for (let status in statuses) {
+            if (status !== 'id') {
                 let boardColumn = document.createElement('div');
                 boardColumn.setAttribute('class', 'column-' + status);
                 boardColumn.classList.add('board-column');
@@ -145,10 +142,10 @@ export let dom = {
                 boardColumns.appendChild(boardColumn);
                 boardColumn.appendChild(boardColumnTitle);
                 boardColumn.appendChild(boardColumnContent);
-            }
 
+            }
         }
-        dom.getBoardIdsFromDocument();
+        dom.loadCards(statuses.id)
     },
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
@@ -162,25 +159,30 @@ export let dom = {
             });
         }
     },
-    hideBoard: function(event) {
+    hideBoard: function (event) {
         let target = event.currentTarget;
         target.removeEventListener('click', dom.hideBoard);
         target.addEventListener('click', dom.displayBoard);
         let board = target.parentElement.parentElement.parentElement;
         board.querySelector('.board-columns').classList.add('hidden');
         let boardId = board.id.replace('board-', '');
-        let request = { id: boardId, status: false};
+        let request = {id: boardId, status: false};
         dataHandler.createBoardStatusRequest(request);
     },
-    displayBoard: function(event) {
+    displayBoard: function (event) {
         let target = event.target;
         target.removeEventListener('click', dom.displayBoard);
         target.addEventListener('click', dom.hideBoard);
         let board = target.parentElement.parentElement.parentElement;
         board.querySelector('.board-columns').classList.remove('hidden');
         let boardId = board.id.replace('board-', '');
-        let request = { id: boardId, status: true};
+        let request = {id: boardId, status: true};
         dataHandler.createBoardStatusRequest(request);
+    },
+    loadNewBoard: function () {
+        dataHandler.getNewBoard(function (boards) {
+            dom.showBoards(boards);
+        });
     },
     addNewColumn: function(event){
         let addColumnButtons = document.querySelectorAll('.column-add')
