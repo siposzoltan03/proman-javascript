@@ -114,4 +114,15 @@ export let dataHandler = {
             })
         })
     },
+    createBoardStatusRequest: function(req){
+        fetch(`${window.origin}/change-board-status`, {
+            method: "PUT",
+            credentials: "include",
+            body: JSON.stringify(req),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+    },
 };

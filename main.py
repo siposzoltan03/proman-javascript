@@ -13,7 +13,6 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
-    print(data_manager.get_cards_for_board('1'))
     return render_template('design.html')
 
 
@@ -23,7 +22,7 @@ def get_boards():
     """
     All the boards
     """
-    return data_manager.get_table_data('boards')
+    return data_manager.get_table_data()
 
 
 @app.route("/get-board/<board_id>")
@@ -64,6 +63,15 @@ def change_board_title():
     data_manager.rename_board(board_id, new_title)
     return '', 204
 
+
+@app.route("/change-board-status", methods=['PUT'])
+@json_response
+def change_board_status():
+    req = request.get_json()
+    board_id = req['id']
+    status = req['status']
+    data_manager.change_board_status(board_id, status)
+    return '', 204
 
 
 def main():

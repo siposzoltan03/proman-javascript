@@ -148,3 +148,6 @@ section.board{
     text-align: right;
 
 }
+ .hidden {
+     display: none;
+ }
