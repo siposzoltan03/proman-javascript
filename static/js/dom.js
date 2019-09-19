@@ -255,7 +255,7 @@ export let dom = {
     },
     openModal: function (event) {
         document.querySelector('#modal').classList.remove('hidden');
-        let boardId = event.target.parentElement.parentElement.id.replace('board-', '');
+        let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
     }
 };
