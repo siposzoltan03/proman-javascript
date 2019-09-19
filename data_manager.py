@@ -101,6 +101,7 @@ def get_next_board_name(cursor):
         board_numbers.append(int(board_title['title'][-1]))
     return max(board_numbers) + 1
 
+
 @connection.connection_handler
 def get_board_by_id(cursor, board_id):
     cursor.execute("""
@@ -132,3 +133,39 @@ def get_board_statuses(cursor, board_id):
     return statuses
 
 
+@connection.connection_handler
+def get_status_id_by_title(cursor, status_title):
+    cursor.execute("""
+                   SELECT id
+                   FROM statuses
+                   WHERE title = %s
+                   """, (status_title,))
+    status_id = cursor.fetchall()
+    return status_id
+
+
+@connection.connection_handler
+def add_new_board_status(cursor, board_id, status_id):
+    cursor.execute("""
+                      SELECT max(id) as max_id
+                      FROM board_statuses
+                      """)
+    max_id = int(cursor.fetchone()['max_id']) + 1
+
+    cursor.execute("""
+                   INSERT INTO board_statuses (id, board_id, status_id )
+                   VALUES (%s, %s, %s)
+                   """, (max_id, board_id, status_id))
+
+@connection.connection_handler
+def add_new_status(cursor, status):
+    cursor.execute("""
+                      SELECT max(id) as max_id
+                      FROM statuses
+                      """)
+    max_id = int(cursor.fetchone()['max_id']) + 1
+
+    cursor.execute("""
+                   INSERT INTO statuses (id, title)
+                   VALUES (%s, %s)
+                   """, (max_id, status))

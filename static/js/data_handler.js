@@ -52,7 +52,7 @@ export let dataHandler = {
     },
     getBoard: function (boardId, callback) {
         // the board is retrieved and then the callback function is called with the board
-        this._api_get(`/get-board/${boardId}`,(response) => {
+        this._api_get(`/get-board/${boardId}`, (response) => {
             this._data = response;
             callback(response)
         });
@@ -76,7 +76,7 @@ export let dataHandler = {
     },
     createNewBoard: function (callback) {
         // creates new board, saves it and calls the callback function with its data
-    this._api_post('/add-board', '', callback )
+        this._api_post('/add-board', '', callback)
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
@@ -114,7 +114,7 @@ export let dataHandler = {
             })
         })
     },
-    createBoardStatusRequest: function(req){
+    createBoardStatusRequest: function (req) {
         fetch(`${window.origin}/change-board-status`, {
             method: "PUT",
             credentials: "include",
@@ -125,4 +125,26 @@ export let dataHandler = {
             })
         })
     },
+
+    addColumn: function (event) {
+        const boardId = event.target.parentElement.parentElement.id.replace("board-", "")
+        console.log(boardId);
+        const columnName = prompt("please enter the column name");
+        console.log(columnName);
+        let idAndTitle = {
+            id: boardId,
+            newTitle: columnName
+        };
+        fetch(`${window.origin}/add-new-column`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(idAndTitle),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+    },
+
+
 };

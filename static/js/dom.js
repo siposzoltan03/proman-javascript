@@ -99,6 +99,9 @@ export let dom = {
         let buttonAddCard = document.createElement('button');
         buttonAddCard.classList.add('board-add');
         buttonAddCard.textContent = 'Add Card';
+        let buttonAddColumn = document.createElement("button");
+        buttonAddColumn.classList.add('column-add');
+        buttonAddColumn.textContent = 'Add Column';
         let buttonToggleBoard = document.createElement('button');
         buttonToggleBoard.classList.add('board-toggle');
         let icon = document.createElement('i');
@@ -113,9 +116,11 @@ export let dom = {
         boardHeader.appendChild(boardTitle);
         boardHeader.appendChild(buttonAddCard);
         boardHeader.appendChild(buttonToggleBoard);
+        boardHeader.appendChild(buttonAddColumn)
         buttonToggleBoard.appendChild(icon);
-        //rename boards
+        //rename boards and add new columns
         dom.renameBoard();
+        dom.addNewColumn();
     },
 
     createBoardColumns(statuses) {
@@ -145,8 +150,6 @@ export let dom = {
         }
         dom.getBoardIdsFromDocument();
     },
-
-
     renameBoard: function () {
         let boardTitle = document.querySelectorAll('.board-title');
         for (let title of boardTitle) {
@@ -178,5 +181,12 @@ export let dom = {
         let boardId = board.id.replace('board-', '');
         let request = { id: boardId, status: true};
         dataHandler.createBoardStatusRequest(request);
-    }
+    },
+    addNewColumn: function(event){
+        let addColumnButtons = document.querySelectorAll('.column-add')
+        for (let addColumnButton of addColumnButtons) {
+            addColumnButton.addEventListener('click', dataHandler.addColumn)
+        }
+
+    },
 };
