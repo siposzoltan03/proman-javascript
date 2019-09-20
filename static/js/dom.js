@@ -84,6 +84,17 @@ export let dom = {
             cardTitle.setAttribute('class', 'card-title');
             cardTitle.textContent = card["title"];
             cardTitle.setAttribute('data-id', card["id"]);
+            newCard.setAttribute('draggable', 'true');
+            newCard.addEventListener('dragstart', (ev) => {
+                const cardId = ev.target.querySelector('.card-title').dataset.id;
+                ev.dataTransfer.setData("text", cardId);
+                ev.dataTransfer.dropEffect = 'move';
+                ev.target.classList.add('dragging');
+            });
+            newCard.addEventListener('dragend', (ev) => {
+                ev.target.classList.remove('dragging');
+                ev.dataTransfer.clearData();
+            });
             newCard.appendChild(cardTitle);
             content.appendChild(newCard);
 
@@ -153,6 +164,7 @@ export let dom = {
             if (status !== 'id') {
                 let boardColumn = document.createElement('div');
                 boardColumn.setAttribute('class', 'column-' + status);
+                boardColumn.setAttribute('data-statusid', status);
                 boardColumn.classList.add('board-column');
                 let boardColumnTitle = document.createElement('div');
                 boardColumnTitle.classList.add('board-column-title');
@@ -164,6 +176,24 @@ export let dom = {
                 boardColumn.appendChild(boardColumnTitle);
                 boardColumn.appendChild(boardColumnContent);
 
+                boardColumnContent.addEventListener('dragover', (ev) => {
+                    ev.preventDefault();
+                    boardColumnContent.classList.add('dropzone');
+                });
+
+                boardColumnContent.addEventListener('dragleave', () => {
+                    boardColumnContent.classList.remove('dropzone');
+                });
+
+                boardColumnContent.addEventListener('drop', (ev) => {
+                    const cardId = ev.dataTransfer.getData("text");
+                    const card = document.querySelector(`[data-id="${cardId}"`).parentElement;
+                    boardColumnContent.appendChild(card);
+                    boardColumnContent.classList.remove('dropzone');
+
+                    const statusId = boardColumnContent.parentElement.dataset.statusid;
+                    dataHandler.updateCardStatus(cardId, statusId);
+                })
             }
         }
         // dom.loadCards(statuses.id)
@@ -252,6 +282,13 @@ export let dom = {
         dataHandler.getNewBoard(function (boards) {
             dom.showBoards(boards);
         });
+    },
+    addNewColumn: function (event) {
+        let addColumnButtons = document.querySelectorAll('.column-add')
+        for (let addColumnButton of addColumnButtons) {
+            addColumnButton.addEventListener('click', dataHandler.addColumn)
+        }
+
     },
     openModal: function (event) {
         document.querySelector('#modal').classList.remove('hidden');

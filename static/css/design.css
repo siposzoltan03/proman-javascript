@@ -4,6 +4,8 @@
     --status-2: #594300;
     --status-3: #525900;
     --status-4: #085900;
+    --status-5: #534;
+    --status-6: #724000;
 }
 
 body{
@@ -118,6 +120,14 @@ section.board{
     background: var(--status-4);
 }
 
+.board-column:nth-of-type(5) .card{
+    background: var(--status-5);
+}
+
+.board-column:nth-of-type(6) .card{
+    background: var(--status-6);
+}
+
 .card-remove{
     display: block;
     position: absolute;
@@ -189,3 +199,11 @@ section.board{
     margin: 13px 0px ;
 }
 
+ .dragging {
+     opacity: 0.5;
+ }
+
+ .dropzone {
+     border: 1px dashed black;
+     background-color: cyan;
+ }
