@@ -75,7 +75,7 @@ INSERT INTO board_statuses VALUES (5, 2, 0);
 INSERT INTO board_statuses VALUES (6, 2, 1);
 INSERT INTO board_statuses VALUES (7, 2, 2);
 INSERT INTO board_statuses VALUES (8, 2, 3);
-SELECT pg_catalog.setval('board_statuses_id_seq', 12, true);
+SELECT pg_catalog.setval('board_statuses_id_seq', 8, true);
 
 CREATE OR REPLACE FUNCTION default_statuses()
   RETURNS trigger AS $default_statuses$
