@@ -98,6 +98,16 @@ def patch_card(id):
     return '', 204
 
 
+@app.route("/card/", methods=['POST'])
+@json_response
+def create_card():
+    req = request.get_json()
+    card_id = req['data']['boardId']
+    status_id = req['data']['statusId']
+    response = data_manager.add_new_card(card_id, status_id)
+    return response
+
+
 def main():
     app.run(debug=True)
 
