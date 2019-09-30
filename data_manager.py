@@ -196,3 +196,19 @@ def add_new_status(cursor, status):
                    INSERT INTO statuses (title)
                    VALUES (%s)
                    """, (status,))
+
+
+@connection.connection_handler
+def delete_card(cursor, card_id):
+    cursor.execute("""DELETE FROM cards
+                      WHERE id = %s
+                      RETURNING order_num, status_id, board_id""", (card_id,))
+    deleted_card = cursor.fetchone()
+
+    cursor.execute("""UPDATE cards
+                      SET order_num = order_num - 1
+                      WHERE board_id = %(board_id)s
+                      AND status_id = %(status_id)s
+                      AND order_num > %(order_num)s""", {'board_id': deleted_card['board_id'],
+                                                         'status_id': deleted_card['status_id'],
+                                                         'order_num': deleted_card['order_num']})
