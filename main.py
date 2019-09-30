@@ -108,6 +108,12 @@ def create_card():
     return response
 
 
+@app.route("/card/<card_id>", methods=['DELETE'])
+def delete_card(card_id):
+    data_manager.delete_card(card_id)
+    return '', 204
+
+
 def main():
     app.run(debug=True)
 
