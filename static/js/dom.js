@@ -39,6 +39,7 @@ export let dom = {
 
         this.attachEventListenerForCardRename();
         this.attachEventListenerForCreateCard();
+        this.attachEventListenerForDeleteCard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -80,6 +81,7 @@ export let dom = {
             trashIcon.classList.add('fas');
             trashIcon.classList.add('fa-trash-alt');
             deleteButton.appendChild(trashIcon);
+            deleteButton.addEventListener('click', dom.removeCard);
             newCard.appendChild(deleteButton);
             let cardTitle = document.createElement('div');
             cardTitle.setAttribute('class', 'card-title');
@@ -294,11 +296,11 @@ export let dom = {
     },
     openModal: function (event) {
         document.querySelector('#modal').classList.remove('hidden');
-        let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
+        const boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
     },
     attachEventListenerForCreateCard: function () {
-        let cardButtons = document.querySelectorAll('.board-add');
+        const cardButtons = document.querySelectorAll('.board-add');
         for (let cardButton of cardButtons) {
             cardButton.addEventListener('click', dom.createCard)
         }
@@ -308,5 +310,16 @@ export let dom = {
         const board = this.parentElement.parentElement.querySelector('.board-columns');
         const statusId = board.querySelector('.column-0').getAttribute('data-statusid');
         dataHandler.createNewCard(boardId, statusId, dom.showCards)
+    },
+    attachEventListenerForDeleteCard: function () {
+        const trashIcons = document.querySelectorAll('.card-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.addEventListener('click', dom.removeCard)
+        }
+    },
+    removeCard: function (event) {
+        const cardId = this.parentElement.querySelector('.card-title').getAttribute('data-id');
+        this.parentElement.remove();
+        dataHandler.removeCard(cardId)
     }
 };
