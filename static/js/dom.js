@@ -38,6 +38,7 @@ export let dom = {
         });
 
         this.attachEventListenerForCardRename();
+        this.attachEventListenerForCreateCard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -116,6 +117,7 @@ export let dom = {
         let buttonAddCard = document.createElement('button');
         buttonAddCard.classList.add('board-add');
         buttonAddCard.textContent = 'Add Card';
+        buttonAddCard.addEventListener('click', dom.createCard);
         let buttonAddColumn = document.createElement("button");
         buttonAddColumn.classList.add('column-add');
         let iconAdd = document.createElement('i');
@@ -294,5 +296,17 @@ export let dom = {
         document.querySelector('#modal').classList.remove('hidden');
         let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
+    },
+    attachEventListenerForCreateCard: function () {
+        let cardButtons = document.querySelectorAll('.board-add');
+        for (let cardButton of cardButtons) {
+            cardButton.addEventListener('click', dom.createCard)
+        }
+    },
+    createCard: function (event) {
+        const boardId = this.parentElement.parentElement.id.replace('board-', '');
+        const board = this.parentElement.parentElement.querySelector('.board-columns');
+        const statusId = board.querySelector('.column-0').getAttribute('data-statusid');
+        dataHandler.createNewCard(boardId, statusId, dom.showCards)
     }
 };
