@@ -36,7 +36,7 @@ export let dom = {
             let modal = document.querySelector('#modal');
             modal.classList.add('hidden');
         });
-
+        this.renameColumn();
         this.attachEventListenerForCardRename();
     },
     loadBoards: function () {
@@ -210,6 +210,53 @@ export let dom = {
             });
         }
     },
+    renameColumn:() => {
+        document.body.addEventListener('dblclick', (dblClickEvent) => {
+            const columnTitleHolder = dblClickEvent.target;
+
+            if (columnTitleHolder.classList.contains('board-column-title')) {
+                const oldTitle = columnTitleHolder.textContent;
+                const boardId = columnTitleHolder.parentElement.parentElement.parentElement.id.replace("board-", "");
+
+
+                const inputElement = document.createElement('input');
+                inputElement.value = oldTitle;
+                inputElement.classList.add('column-title-edit');
+                inputElement.addEventListener('keyup', (keyboardEvent) => {
+                    switch (keyboardEvent.code) {
+                        case ENTER_KEY:
+                        case NUMPAD_ENTER_KEY:
+                            dom.saveColumnTitle(boardId, inputElement.value, columnTitleHolder, oldTitle)
+                            break;
+                        case ESC_KEY:
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                            break;
+                    }
+                });
+                inputElement.addEventListener('blur', () => {
+                    setTimeout(() => {
+                        if (columnTitleHolder.children.length > 0) {
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                        }
+                    });
+                });
+
+                columnTitleHolder.textContent = '';
+                columnTitleHolder.append(inputElement);
+                inputElement.focus();
+                inputElement.setSelectionRange(0, inputElement.value.length)
+            }
+        });
+    },
+    cancelColumnTitleEdit: (columnTitleHolder, oldTitle) => {
+        columnTitleHolder.innerHTML = oldTitle;
+    },
+    saveColumnTitle: (boardId, newTitle, columnTitleHolder, oldTitle) => {
+        dataHandler.updateColumnTitle(boardId, newTitle, oldTitle, () => {
+            columnTitleHolder.innerHTML = newTitle;
+        });
+    },
+
 
     attachEventListenerForCardRename: () => {
         document.body.addEventListener('dblclick', (dblClickEvent) => {

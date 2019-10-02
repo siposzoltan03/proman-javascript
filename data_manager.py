@@ -191,3 +191,18 @@ def add_new_status(cursor, status):
                    INSERT INTO statuses (title)
                    VALUES (%s)
                    """, (status,))
+
+@connection.connection_handler
+def change_column_status(cursor, board_id, old_status_id, status_id):
+    cursor.execute("""
+                        UPDATE board_statuses
+                        SET status_id = %s
+                        WHERE board_id = %s AND status_id = %s
+                        """, (status_id, board_id, old_status_id))
+
+    cursor.execute("""
+                        UPDATE cards
+                        SET status_id = %s
+                        WHERE board_id = %s AND status_id = %s
+                        """, (status_id, board_id, old_status_id))
+
