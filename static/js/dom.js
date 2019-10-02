@@ -38,6 +38,7 @@ export let dom = {
         });
 
         this.attachEventListenerForCardRename();
+        this.initRegisterLogin();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -294,5 +295,23 @@ export let dom = {
         document.querySelector('#modal').classList.remove('hidden');
         let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
+    },
+    initSessionButtons: function (feature) {
+        let button = document.querySelector(`#${feature}`);
+        button.addEventListener("click", function () {
+            let modal = document.querySelector(`#${feature}-modal`);
+            let pageMask = document.querySelector('#page-mask');
+            modal.style.display = "block";
+            pageMask.style.display = "block";
+            let modalCloseButton = modal.querySelector(`#${feature}-close`);
+            modalCloseButton.addEventListener('click', function () {
+                modal.removeAttribute('style');
+                pageMask.removeAttribute('style');
+            });
+        });
+    },
+    initRegisterLogin: function() {
+        this.initSessionButtons('registration');
+        this.initSessionButtons('login');
     }
 };

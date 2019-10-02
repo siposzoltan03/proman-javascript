@@ -1,17 +1,6 @@
 from psycopg2 import sql
-import bcrypt
 import connection
-
-
-def hash_password(plain_text_password):
-    # By using bcrypt, the salt is saved into the hash itself
-    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes.decode('utf-8')
-
-
-def verify_password(plain_text_password, hashed_password):
-    hashed_bytes_password = hashed_password.encode('utf-8')
-    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+from util import hash_password as hash, verify_password as verify
 
 
 @connection.connection_handler
@@ -191,3 +180,18 @@ def add_new_status(cursor, status):
                    INSERT INTO statuses (title)
                    VALUES (%s)
                    """, (status,))
+
+
+@connection.connection_handler
+def registration(cursor, user):
+    print(user)
+    cursor.execute("""
+                            INSERT INTO users (registration_time, username, email, password)
+                            VALUES (%s,%s,%s,%s)
+                            """,
+                    (user['registration_time'],
+                    user['username'],
+                    user['email'],
+                    user['password'],
+                    )
+                   )

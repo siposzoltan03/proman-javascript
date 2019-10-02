@@ -1,7 +1,6 @@
-from flask import Flask, render_template, url_for, request, jsonify, make_response
+from flask import Flask, render_template, url_for, request, jsonify, make_response, redirect
 from util import json_response
-
-
+import data_handler
 import data_manager
 
 app = Flask(__name__)
@@ -96,6 +95,16 @@ def patch_card(id):
     elif 'statusId' in req['data']:
         data_manager.change_card_status(id, req['data']['statusId'])
     return '', 204
+
+
+@app.route("/registration", methods=["POST"])
+def registration():
+    name = request.form["username"]
+    password = request.form["password"]
+    email = request.form["email"]
+    print(f"{name}{password}{email}")
+    data_handler.reg_data(name, password, email)
+    return redirect("/")
 
 
 def main():
