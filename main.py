@@ -1,7 +1,6 @@
-from flask import Flask, render_template, url_for, request, jsonify, make_response
+from flask import Flask, render_template, url_for, request, jsonify, make_response, redirect
 from util import json_response
-
-
+import data_handler
 import data_manager
 
 app = Flask(__name__)
@@ -96,6 +95,32 @@ def patch_card(id):
     elif 'statusId' in req['data']:
         data_manager.change_card_status(id, req['data']['statusId'])
     return '', 204
+
+
+@app.route("/registration", methods=["POST"])
+def registration():
+    name = request.form["username"]
+    password = request.form["password"]
+    email = request.form["email"]
+    print(f"{name}{password}{email}")
+    data_handler.reg_data(name, password, email)
+    return redirect("/")
+
+
+@app.route("/column/<int:boardId>", methods=['PATCH'])
+def patch_column(boardId):
+    board_id = boardId
+    req = request.get_json()
+    title = req['data']['newTitle']
+    old_title = req['data']['oldTitle']
+    old_status_id = data_manager.get_status_id_by_title(old_title.lower())[0]['id']
+    if title.lower() in data_manager.get_statuses().values():
+        status_id = data_manager.get_status_id_by_title(title.lower())[0]['id']
+        data_manager.change_column_status(board_id, old_status_id, status_id)
+    else:
+        data_manager.add_new_status(title.lower())
+        status_id = data_manager.get_status_id_by_title(title.lower())[0]['id']
+        data_manager.change_column_status(board_id, old_status_id, status_id)
 
 
 @app.route("/card/", methods=['POST'])

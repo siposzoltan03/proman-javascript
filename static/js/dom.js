@@ -36,8 +36,9 @@ export let dom = {
             let modal = document.querySelector('#modal');
             modal.classList.add('hidden');
         });
-
+        this.renameColumn();
         this.attachEventListenerForCardRename();
+        this.initRegisterLogin();
         this.attachEventListenerForCreateCard();
         this.attachEventListenerForDeleteCard();
     },
@@ -109,7 +110,7 @@ export let dom = {
 
 
     createBoardHeader: function (boardRow) {
-        display[boardRow.id] = boardRow.is_active
+        display[boardRow.id] = boardRow.is_active;
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
         boardHeader.classList.add('board-header');
@@ -214,7 +215,56 @@ export let dom = {
             });
         }
     },
+    renameColumn:() => {
+        document.body.addEventListener('dblclick', (dblClickEvent) => {
+            const columnTitleHolder = dblClickEvent.target;
 
+            if (columnTitleHolder.classList.contains('board-column-title')) {
+                const oldTitle = columnTitleHolder.textContent;
+                const boardId = columnTitleHolder.parentElement.parentElement.parentElement.id.replace("board-", "");
+
+
+                const inputElement = document.createElement('input');
+                inputElement.value = oldTitle;
+                inputElement.classList.add('column-title-edit');
+                inputElement.addEventListener('keyup', (keyboardEvent) => {
+                    switch (keyboardEvent.code) {
+                        case ENTER_KEY:
+                        case NUMPAD_ENTER_KEY:
+                            if(inputElement.value === ""){
+                                dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle)
+                            } else {
+                                dom.saveColumnTitle(boardId, inputElement.value, columnTitleHolder, oldTitle)
+                            }
+                            break;
+                        case ESC_KEY:
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                            break;
+                    }
+                });
+                inputElement.addEventListener('blur', () => {
+                    setTimeout(() => {
+                        if (columnTitleHolder.children.length > 0) {
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                        }
+                    });
+                });
+
+                columnTitleHolder.textContent = '';
+                columnTitleHolder.append(inputElement);
+                inputElement.focus();
+                inputElement.setSelectionRange(0, inputElement.value.length)
+            }
+        });
+    },
+    cancelColumnTitleEdit: (columnTitleHolder, oldTitle) => {
+        columnTitleHolder.innerHTML = oldTitle;
+    },
+    saveColumnTitle: (boardId, newTitle, columnTitleHolder, oldTitle) => {
+        dataHandler.updateColumnTitle(boardId, newTitle, oldTitle, () => {
+            columnTitleHolder.innerHTML = newTitle;
+        });
+    },
     attachEventListenerForCardRename: () => {
         document.body.addEventListener('dblclick', (dblClickEvent) => {
             const cardTitleHolder = dblClickEvent.target;
@@ -229,7 +279,11 @@ export let dom = {
                     switch (keyboardEvent.code) {
                         case ENTER_KEY:
                         case NUMPAD_ENTER_KEY:
-                            dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            if (inputElement.value === ""){
+                                dom.cancelCardTitleEdit(cardTitleHolder, oldTitle)
+                            } else {
+                                dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            }
                             break;
                         case ESC_KEY:
                             dom.cancelCardTitleEdit(cardTitleHolder, oldTitle);
@@ -321,5 +375,23 @@ export let dom = {
         const cardId = this.parentElement.querySelector('.card-title').getAttribute('data-id');
         this.parentElement.remove();
         dataHandler.removeCard(cardId)
+    },
+    initSessionButtons: function (feature) {
+        let button = document.querySelector(`#${feature}`);
+        button.addEventListener("click", function () {
+            let modal = document.querySelector(`#${feature}-modal`);
+            let pageMask = document.querySelector('#page-mask');
+            modal.style.display = "block";
+            pageMask.style.display = "block";
+            let modalCloseButton = modal.querySelector(`#${feature}-close`);
+            modalCloseButton.addEventListener('click', function () {
+                modal.removeAttribute('style');
+                pageMask.removeAttribute('style');
+            });
+        });
+    },
+    initRegisterLogin: function() {
+        this.initSessionButtons('registration');
+        this.initSessionButtons('login');
     }
 };

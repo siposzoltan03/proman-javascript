@@ -192,6 +192,10 @@ export let dataHandler = {
     updateCardStatus: function(id, statusId, callback) {
         this._api_patch(`${window.origin}/card/${id}`, {statusId}, callback);
     },
+
+    updateColumnTitle(boardId,newTitle, oldTitle, callback) {
+        this._api_patch(`${window.origin}/column/${boardId}`, {newTitle, oldTitle}, callback);
+    },
     removeCard: function (cardId) {
         this._api_delete(`${window.origin}/card/${cardId}`)
     }
