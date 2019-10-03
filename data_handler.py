@@ -52,3 +52,4 @@ def login_user(username, password):
     if util.verify_password(password,hashed_password[0]['password']):
         user_all_data = data_manager.get_user_data(user)
         session['user'] = user_all_data[0]['username']
+        session['user_id'] = user_all_data[0]['id']

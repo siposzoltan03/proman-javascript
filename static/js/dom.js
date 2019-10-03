@@ -24,7 +24,11 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         let buttonAddBoard = document.querySelector('.board-add');
+        if (document.querySelector('#logout')) {
+        buttonAddBoard.addEventListener('click', dom.loadNewPrivateBoard)
+        } else {
         buttonAddBoard.addEventListener('click', dom.loadNewBoard);
+        }
         let modalCloseButton = document.querySelector('#close-button');
         modalCloseButton.addEventListener('click', function () {
             let modal = document.querySelector('#modal');
@@ -49,13 +53,31 @@ export let dom = {
         //let boardContainer = document.querySelector('.board-container');
         //boardContainer.innerHTML = '';
         dataHandler.getBoards(function (boards) {
-            dom.showBoards(boards);
+            dom.showBoards(boards, 'Public');
         });
+        const logoutButton = document.querySelector('#logout');
+        if (logoutButton) {
+            setTimeout( function () {
+                const userId = logoutButton.dataset.user_id;
+                dataHandler.getPrivateBoards(userId, function (boards) {
+                dom.showBoards(boards, 'Private');
+                }, 400)
+            })
+
+        }
     },
-    showBoards: function (boards) {
+    createHeader: function (boardType) {
+        if (boardType) {
+            const boardContainer = document.querySelector('#boards');
+            const header = document.createElement('h2');
+            header.textContent = `${boardType} boards`;
+            boardContainer.appendChild(header);
+        }
+    },
+    showBoards: function (boards, boardType) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
-
+        dom.createHeader(boardType);
         let boardContainer = document.querySelector('.board-container');
 
 
@@ -342,6 +364,11 @@ export let dom = {
     },
     loadNewBoard: function () {
         dataHandler.getNewBoard(function (boards) {
+            dom.showBoards(boards);
+        });
+    },
+    loadNewPrivateBoard: function () {
+        dataHandler.getNewPrivateBoard(function (boards) {
             dom.showBoards(boards);
         });
     },

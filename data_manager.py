@@ -5,7 +5,17 @@ from util import hash_password as hash, verify_password as verify
 
 @connection.connection_handler
 def get_table_data(cursor):  # _read_csv(file)
-    cursor.execute("SELECT * FROM boards ORDER BY id")
+    cursor.execute("""SELECT * FROM boards
+                      WHERE user_id is NULL
+                      ORDER BY id""")
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_table_data(cursor, user_id):
+    cursor.execute("""SELECT * FROM boards
+                      WHERE user_id = %s
+                      ORDER BY id""", (user_id,))
     return cursor.fetchall()
 
 
@@ -49,14 +59,34 @@ def change_card_status(cursor, card_id, status_id):
 @connection.connection_handler
 def add_new_board(cursor):
     cursor.execute("""
-                  SELECT max(id) as max_id
+                  SELECT count(id) as max_id
                   FROM boards
+                  WHERE user_id IS NULL
                   """)
     max_id = int(cursor.fetchone()['max_id']) + 1
 
     cursor.execute("""INSERT INTO boards (title)
-                      VALUES ('Board ' || %s)
+                      VALUES ('Public ' || %s)
                       RETURNING id""", (max_id,))
+    _id = cursor.fetchone()
+    board_id = _id['id']
+    cursor.execute("""SELECT * FROM boards
+                      WHERE id = %s""", (board_id,))
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_new_private_board(cursor, user_id):
+    cursor.execute("""
+                  SELECT count(id) as max_id
+                  FROM boards
+                  WHERE user_id IS NOT NULL
+                  """)
+    max_id = int(cursor.fetchone()['max_id']) + 1
+
+    cursor.execute("""INSERT INTO boards (title, user_id)
+                      VALUES ('Private ' || %s, %s)
+                      RETURNING id""", (max_id, user_id))
     _id = cursor.fetchone()
     board_id = _id['id']
     cursor.execute("""SELECT * FROM boards

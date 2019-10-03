@@ -54,12 +54,12 @@ section.board{
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-.board-title{
+.board-title, .new-board-title {
     margin: 13px;
     display: inline-block;
     font-size: 20px;
 }
-.board-title, .board-add, .board-toggle{
+.board-title, .board-add, .board-toggle, .title-save-button {
     display: inline-block;
 }
 
@@ -265,3 +265,7 @@ section.board{
     bottom: 0;
     left: 0;
 }
+ a {
+     text-decoration: none;
+     color: white;
+ }

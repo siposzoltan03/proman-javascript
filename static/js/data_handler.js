@@ -79,9 +79,23 @@ export let dataHandler = {
             callback(response);
         });
     },
+    getPrivateBoards: function (userId, callback) {
+        this._api_get(`/get-boards/${userId}`, (response) => {
+            this._data = response;
+            callback(response);
+        });
+    },
     getNewBoard: function (callback) {
         // the board is retrieved and then the callback function is called with the board
         this._api_post('/add-board', '',(response) => {
+            this._data = response;
+            callback(response)
+        });
+    },
+    getNewPrivateBoard: function (callback) {
+        const userId = document.querySelector('#logout').dataset.user_id;
+        const data = {user_id: userId}
+        this._api_post('/add-private-board', data,(response) => {
             this._data = response;
             callback(response)
         });

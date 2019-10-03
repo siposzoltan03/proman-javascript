@@ -24,6 +24,12 @@ def get_boards():
     return data_manager.get_table_data()
 
 
+@app.route("/get-boards/<user_id>")
+@json_response
+def get_private_boards(user_id):
+    return data_manager.get_user_table_data(user_id)
+
+
 @app.route("/get-board/<board_id>")
 def get_board(board_id):
     return data_manager.get_board_by_id(board_id)
@@ -47,9 +53,16 @@ def get_statuses(board_id):
 @app.route('/add-board', methods=['POST'])
 @json_response
 def add_board():
-    if request.method == 'POST':
-        # next_board_num = str(data_manager.get_next_board_name())
-        return data_manager.add_new_board()
+    return data_manager.add_new_board()
+
+
+@app.route('/add-private-board', methods=['POST'])
+@json_response
+def add_private_board():
+    req = request.get_json()['data']
+    user_id = req['user_id']
+    print(user_id)
+    return data_manager.add_new_private_board(user_id)
 
 
 @app.route("/change-board-title", methods=['PUT'])
