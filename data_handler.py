@@ -1,4 +1,6 @@
 import persistence
+import util
+import data_manager
 
 
 def get_card_status(status_id):
@@ -28,3 +30,12 @@ def get_cards_for_board(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
+
+
+def reg_data(name, password, email):
+    user = {}
+    user['registration_time'] = util.get_current_datetime()
+    user['username'] = name
+    user['email'] = email
+    user['password'] = util.hash_password(password)
+    data_manager.registration(user)
