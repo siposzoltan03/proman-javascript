@@ -56,6 +56,17 @@ export let dataHandler = {
             });
 
     },
+    _api_delete: function (url) {
+        fetch(url, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            })
+        })
+    },
     init: function () {
     },
     getBoards: function (callback) {
@@ -99,8 +110,8 @@ export let dataHandler = {
         // creates new board, saves it and calls the callback function with its data
         this._api_post('/add-board', '', callback)
     },
-    createNewCard: function (cardTitle, boardId, statusId, callback) {
-        // creates new card, saves it and calls the callback function with its data
+    createNewCard: function (boardId, statusId, callback) {
+        this._api_post('/card/', {boardId, statusId}, callback)
 
     },
     // here comes more features
@@ -180,5 +191,12 @@ export let dataHandler = {
 
     updateCardStatus: function(id, statusId, callback) {
         this._api_patch(`${window.origin}/card/${id}`, {statusId}, callback);
+    },
+
+    updateColumnTitle(boardId,newTitle, oldTitle, callback) {
+        this._api_patch(`${window.origin}/column/${boardId}`, {newTitle, oldTitle}, callback);
+    },
+    removeCard: function (cardId) {
+        this._api_delete(`${window.origin}/card/${cardId}`)
     }
 };

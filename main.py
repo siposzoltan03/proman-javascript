@@ -97,6 +97,16 @@ def patch_card(id):
     return '', 204
 
 
+@app.route("/card/", methods=['POST'])
+@json_response
+def create_card():
+    req = request.get_json()
+    card_id = req['data']['boardId']
+    status_id = req['data']['statusId']
+    response = data_manager.add_new_card(card_id, status_id)
+    return response
+
+
 @app.route("/registration", methods=["POST"])
 def registration():
     name = request.form["username"]
@@ -118,6 +128,28 @@ def login():
 def logout():
     session.pop('user', None)
     return redirect('/')
+
+
+@app.route("/column/<int:boardId>", methods=['PATCH'])
+def patch_column(boardId):
+    board_id = boardId
+    req = request.get_json()
+    title = req['data']['newTitle']
+    old_title = req['data']['oldTitle']
+    old_status_id = data_manager.get_status_id_by_title(old_title.lower())[0]['id']
+    if title.lower() in data_manager.get_statuses().values():
+        status_id = data_manager.get_status_id_by_title(title.lower())[0]['id']
+        data_manager.change_column_status(board_id, old_status_id, status_id)
+    else:
+        data_manager.add_new_status(title.lower())
+        status_id = data_manager.get_status_id_by_title(title.lower())[0]['id']
+        data_manager.change_column_status(board_id, old_status_id, status_id)
+
+
+@app.route("/card/<card_id>", methods=['DELETE'])
+def delete_card(card_id):
+    data_manager.delete_card(card_id)
+    return '', 204
 
 
 def main():

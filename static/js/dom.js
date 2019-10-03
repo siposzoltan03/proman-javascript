@@ -36,8 +36,10 @@ export let dom = {
             let modal = document.querySelector('#modal');
             modal.classList.add('hidden');
         });
-
+        this.renameColumn();
         this.attachEventListenerForCardRename();
+        this.attachEventListenerForCreateCard();
+        this.attachEventListenerForDeleteCard();
         if (document.querySelector('#registration')){
             this.initRegisterLogin();
         }
@@ -82,6 +84,7 @@ export let dom = {
             trashIcon.classList.add('fas');
             trashIcon.classList.add('fa-trash-alt');
             deleteButton.appendChild(trashIcon);
+            deleteButton.addEventListener('click', dom.removeCard);
             newCard.appendChild(deleteButton);
             let cardTitle = document.createElement('div');
             cardTitle.setAttribute('class', 'card-title');
@@ -109,7 +112,7 @@ export let dom = {
 
 
     createBoardHeader: function (boardRow) {
-        display[boardRow.id] = boardRow.is_active
+        display[boardRow.id] = boardRow.is_active;
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
         boardHeader.classList.add('board-header');
@@ -119,6 +122,7 @@ export let dom = {
         let buttonAddCard = document.createElement('button');
         buttonAddCard.classList.add('board-add');
         buttonAddCard.textContent = 'Add Card';
+        buttonAddCard.addEventListener('click', dom.createCard);
         let buttonAddColumn = document.createElement("button");
         buttonAddColumn.classList.add('column-add');
         let iconAdd = document.createElement('i');
@@ -213,6 +217,57 @@ export let dom = {
             });
         }
     },
+    renameColumn:() => {
+        document.body.addEventListener('dblclick', (dblClickEvent) => {
+            const columnTitleHolder = dblClickEvent.target;
+
+            if (columnTitleHolder.classList.contains('board-column-title')) {
+                const oldTitle = columnTitleHolder.textContent;
+                const boardId = columnTitleHolder.parentElement.parentElement.parentElement.id.replace("board-", "");
+
+
+                const inputElement = document.createElement('input');
+                inputElement.value = oldTitle;
+                inputElement.classList.add('column-title-edit');
+                inputElement.addEventListener('keyup', (keyboardEvent) => {
+                    switch (keyboardEvent.code) {
+                        case ENTER_KEY:
+                        case NUMPAD_ENTER_KEY:
+                            if(inputElement.value === ""){
+                                dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle)
+                            } else {
+                                dom.saveColumnTitle(boardId, inputElement.value, columnTitleHolder, oldTitle)
+                            }
+                            break;
+                        case ESC_KEY:
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                            break;
+                    }
+                });
+                inputElement.addEventListener('blur', () => {
+                    setTimeout(() => {
+                        if (columnTitleHolder.children.length > 0) {
+                            dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
+                        }
+                    });
+                });
+
+                columnTitleHolder.textContent = '';
+                columnTitleHolder.append(inputElement);
+                inputElement.focus();
+                inputElement.setSelectionRange(0, inputElement.value.length)
+            }
+        });
+    },
+    cancelColumnTitleEdit: (columnTitleHolder, oldTitle) => {
+        columnTitleHolder.innerHTML = oldTitle;
+    },
+    saveColumnTitle: (boardId, newTitle, columnTitleHolder, oldTitle) => {
+        dataHandler.updateColumnTitle(boardId, newTitle, oldTitle, () => {
+            columnTitleHolder.innerHTML = newTitle;
+        });
+    },
+
 
     attachEventListenerForCardRename: () => {
         document.body.addEventListener('dblclick', (dblClickEvent) => {
@@ -228,7 +283,11 @@ export let dom = {
                     switch (keyboardEvent.code) {
                         case ENTER_KEY:
                         case NUMPAD_ENTER_KEY:
-                            dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            if (inputElement.value === ""){
+                                dom.cancelCardTitleEdit(cardTitleHolder, oldTitle)
+                            } else {
+                                dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            }
                             break;
                         case ESC_KEY:
                             dom.cancelCardTitleEdit(cardTitleHolder, oldTitle);
@@ -294,8 +353,31 @@ export let dom = {
     },
     openModal: function (event) {
         document.querySelector('#modal').classList.remove('hidden');
-        let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
+        const boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
+    },
+    attachEventListenerForCreateCard: function () {
+        const cardButtons = document.querySelectorAll('.board-add');
+        for (let cardButton of cardButtons) {
+            cardButton.addEventListener('click', dom.createCard)
+        }
+    },
+    createCard: function (event) {
+        const boardId = this.parentElement.parentElement.id.replace('board-', '');
+        const board = this.parentElement.parentElement.querySelector('.board-columns');
+        const statusId = board.querySelector('.column-0').getAttribute('data-statusid');
+        dataHandler.createNewCard(boardId, statusId, dom.showCards)
+    },
+    attachEventListenerForDeleteCard: function () {
+        const trashIcons = document.querySelectorAll('.card-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.addEventListener('click', dom.removeCard)
+        }
+    },
+    removeCard: function (event) {
+        const cardId = this.parentElement.querySelector('.card-title').getAttribute('data-id');
+        this.parentElement.remove();
+        dataHandler.removeCard(cardId)
     },
     initSessionButtons: function (feature) {
         let button = document.querySelector(`#${feature}`);
