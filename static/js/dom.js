@@ -38,7 +38,9 @@ export let dom = {
         });
 
         this.attachEventListenerForCardRename();
-        this.initRegisterLogin();
+        if (document.querySelector('#registration')){
+            this.initRegisterLogin();
+        }
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -289,7 +291,6 @@ export let dom = {
         for (let addColumnButton of addColumnButtons) {
             addColumnButton.addEventListener('click', dataHandler.addColumn)
         }
-
     },
     openModal: function (event) {
         document.querySelector('#modal').classList.remove('hidden');
@@ -313,5 +314,5 @@ export let dom = {
     initRegisterLogin: function() {
         this.initSessionButtons('registration');
         this.initSessionButtons('login');
-    }
+    },
 };

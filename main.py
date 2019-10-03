@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, jsonify, make_response, redirect
+from flask import Flask, render_template, url_for, request, jsonify, make_response, redirect, session
 from util import json_response
 import data_handler
 import data_manager
@@ -102,9 +102,22 @@ def registration():
     name = request.form["username"]
     password = request.form["password"]
     email = request.form["email"]
-    print(f"{name}{password}{email}")
     data_handler.reg_data(name, password, email)
     return redirect("/")
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    name = request.form["username"]
+    password = request.form["password"]
+    data_handler.login_user(name, password)
+    return redirect("/")
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect('/')
 
 
 def main():

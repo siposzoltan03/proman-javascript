@@ -1,3 +1,5 @@
+from flask import session
+
 import persistence
 import util
 import data_manager
@@ -33,9 +35,20 @@ def get_cards_for_board(board_id):
 
 
 def reg_data(name, password, email):
+    if data_manager.user_name_and_email_available(name, email):
+        user = {}
+        user['registration_time'] = util.get_current_datetime()
+        user['username'] = name
+        user['email'] = email
+        user['password'] = util.hash_password(password)
+        data_manager.registration(user)
+
+
+def login_user(username, password):
     user = {}
-    user['registration_time'] = util.get_current_datetime()
-    user['username'] = name
-    user['email'] = email
-    user['password'] = util.hash_password(password)
-    data_manager.registration(user)
+    user['username'] = username
+    user['password'] = password
+    hashed_password = data_manager.get_hashed_password(user)
+    if util.verify_password(password,hashed_password[0]['password']):
+        user_all_data = data_manager.get_user_data(user)
+        session['user'] = user_all_data[0]['username']

@@ -184,7 +184,6 @@ def add_new_status(cursor, status):
 
 @connection.connection_handler
 def registration(cursor, user):
-    print(user)
     cursor.execute("""
                             INSERT INTO users (registration_time, username, email, password)
                             VALUES (%s,%s,%s,%s)
@@ -195,3 +194,40 @@ def registration(cursor, user):
                     user['password'],
                     )
                    )
+
+
+@connection.connection_handler
+def get_hashed_password(cursor, user):
+    cursor.execute("""
+                        SELECT password
+                        FROM users
+                        WHERE username = %s;
+                        """,
+                   (user['username'],)
+                   )
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_data(cursor, user):
+    cursor.execute("""
+                        SELECT *
+                        FROM users
+                        WHERE username = %s;
+                       """,
+                   (user['username'],
+                    )
+                   )
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def user_name_and_email_available(cursor, name, email):
+    cursor.execute("""
+                    SELECT *
+                    FROM users
+                    WHERE email = %s OR username = %s;
+                    """,
+                   (email, name))
+    users = cursor.fetchall()
+    return False if users else True
