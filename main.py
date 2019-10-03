@@ -91,7 +91,10 @@ def add_new_column():
 @app.route("/card/<int:id>", methods=['PATCH'])
 def patch_card(id):
     req = request.get_json()
-    data_manager.rename_card(id, req['data']['title'])
+    if 'title' in req['data']:
+        data_manager.rename_card(id, req['data']['title'])
+    elif 'statusId' in req['data']:
+        data_manager.change_card_status(id, req['data']['statusId'])
     return '', 204
 
 
