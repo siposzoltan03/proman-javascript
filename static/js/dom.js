@@ -38,6 +38,7 @@ export let dom = {
         });
 
         this.attachEventListenerForCardRename();
+
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -88,6 +89,7 @@ export let dom = {
             content.appendChild(newCard);
 
         }
+        dom.orderedDragAndDrop();
     },
     loadCards: function (boardId) {
         dataHandler.getCardsByBoardId(boardId, dom.showCards);
@@ -257,5 +259,87 @@ export let dom = {
         document.querySelector('#modal').classList.remove('hidden');
         let boardId = event.target.parentElement.parentElement.parentElement.id.replace('board-', '');
         document.querySelector('#board-id').value = boardId;
-    }
+    },
+
+    orderedDragAndDrop: function () {
+        let cards = document.querySelectorAll('.card');
+        for (let card of cards) {
+            card.addEventListener('mouseover', function (ev) {
+                let clickedCard = ev.currentTarget;
+                let boardOfCard = clickedCard.closest('.board');
+                let columnsOfCard = boardOfCard.querySelectorAll('.board-column-content');
+                let i = 1;
+                for (let columnOfCard of columnsOfCard) {
+                    columnOfCard.classList.add('list-group');
+                    let cardsOfBoard = boardOfCard.querySelectorAll('.card');
+                    columnOfCard.setAttribute('id', `column${i}`);
+                    i++;
+
+                    for (let cardOfBoard of cardsOfBoard) {
+                        cardOfBoard.classList.add('list-group-item');
+                    }
+                }
+                new Sortable(column1, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column2, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column3, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column4, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column5, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column6, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column7, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+                new Sortable(column8, {
+                        group: 'shared',
+                        animation: 150,
+                    });
+
+                // columnOfClickedCard.setAttribute('id', 'selectedItem');
+                // Sortable.create(selectedItem);
+            });
+            card.addEventListener('mouseleave', function (ev) {
+                let clickedCard = ev.currentTarget;
+                let boardOfCard = clickedCard.closest('.board');
+                let columnsOfCard = boardOfCard.querySelectorAll('.board-column-content');
+                let i = 1;
+                for (let columnOfCard of columnsOfCard) {
+                    columnOfCard.classList.remove('list-group');
+                    let cardsOfBoard = boardOfCard.querySelectorAll('.card');
+                    columnOfCard.setAttribute('id', '');
+                    i++;
+
+                    for (let cardOfBoard of cardsOfBoard) {
+                        cardOfBoard.classList.remove('list-group-item');
+                    }
+                }
+            })
+
+            }
+
+
+        },
+
+
+
+
 };
+
+

@@ -9,9 +9,13 @@
           integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css"
           integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" defer></script>
     <link rel="stylesheet" href="../static/css/design.css">
+    <link rel="stylesheet" href="../static/css/drag@drop.css">
+
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+
 
 </head>
 <body>
@@ -31,5 +35,6 @@
 </div>
 <div class="board-container" id="boards">
 </div>
+
 </body>
 </html>
