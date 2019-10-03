@@ -226,7 +226,11 @@ export let dom = {
                     switch (keyboardEvent.code) {
                         case ENTER_KEY:
                         case NUMPAD_ENTER_KEY:
-                            dom.saveColumnTitle(boardId, inputElement.value, columnTitleHolder, oldTitle)
+                            if(inputElement.value === ""){
+                                dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle)
+                            } else {
+                                dom.saveColumnTitle(boardId, inputElement.value, columnTitleHolder, oldTitle)
+                            }
                             break;
                         case ESC_KEY:
                             dom.cancelColumnTitleEdit(columnTitleHolder, oldTitle);
