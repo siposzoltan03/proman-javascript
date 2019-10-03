@@ -65,14 +65,19 @@ def add_new_board(cursor):
 
 
 @connection.connection_handler
-def add_new_card(cursor, board_id):
+def add_new_card(cursor, board_id, status_id):
     cursor.execute("""SELECT COALESCE(MAX(order_num) + 1, 0)AS next FROM cards
                               WHERE board_id = %s
-                              AND status_id = 0""", (board_id,))
+                              AND status_id = %s""", (board_id, status_id))
     order_num = cursor.fetchone()["next"]
 
     cursor.execute("""INSERT INTO cards (board_id, title, status_id, order_num)
-                      VALUES (%s, 'New card', 0, %s)""", (board_id, order_num))
+                      VALUES (%s, 'new card', %s, %s) RETURNING id""", (board_id, status_id, order_num))
+    card_id = cursor.fetchone()['id']
+
+    cursor.execute("""SELECT * FROM cards
+                      WHERE id = %s""", (card_id,))
+    return cursor.fetchall()
 
 
 @connection.connection_handler

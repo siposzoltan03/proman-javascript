@@ -39,6 +39,7 @@ export let dom = {
         this.renameColumn();
         this.attachEventListenerForCardRename();
         this.initRegisterLogin();
+        this.attachEventListenerForCreateCard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -107,7 +108,7 @@ export let dom = {
 
 
     createBoardHeader: function (boardRow) {
-        display[boardRow.id] = boardRow.is_active
+        display[boardRow.id] = boardRow.is_active;
         let section = document.querySelector('#board-' + boardRow.id);
         let boardHeader = document.createElement('div');
         boardHeader.classList.add('board-header');
@@ -117,6 +118,7 @@ export let dom = {
         let buttonAddCard = document.createElement('button');
         buttonAddCard.classList.add('board-add');
         buttonAddCard.textContent = 'Add Card';
+        buttonAddCard.addEventListener('click', dom.createCard);
         let buttonAddColumn = document.createElement("button");
         buttonAddColumn.classList.add('column-add');
         let iconAdd = document.createElement('i');
@@ -368,5 +370,17 @@ export let dom = {
     initRegisterLogin: function() {
         this.initSessionButtons('registration');
         this.initSessionButtons('login');
+    },
+    attachEventListenerForCreateCard: function () {
+        let cardButtons = document.querySelectorAll('.board-add');
+        for (let cardButton of cardButtons) {
+            cardButton.addEventListener('click', dom.createCard)
+        }
+    },
+    createCard: function (event) {
+        const boardId = this.parentElement.parentElement.id.replace('board-', '');
+        const board = this.parentElement.parentElement.querySelector('.board-columns');
+        const statusId = board.querySelector('.column-0').getAttribute('data-statusid');
+        dataHandler.createNewCard(boardId, statusId, dom.showCards)
     }
 };
