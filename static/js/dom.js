@@ -38,8 +38,8 @@ export let dom = {
         });
         this.renameColumn();
         this.attachEventListenerForCardRename();
-        this.initRegisterLogin();
         this.attachEventListenerForCreateCard();
+        this.initRegisterLogin();
         this.attachEventListenerForDeleteCard();
     },
     loadBoards: function () {
@@ -265,6 +265,8 @@ export let dom = {
             columnTitleHolder.innerHTML = newTitle;
         });
     },
+
+
     attachEventListenerForCardRename: () => {
         document.body.addEventListener('dblclick', (dblClickEvent) => {
             const cardTitleHolder = dblClickEvent.target;
