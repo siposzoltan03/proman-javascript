@@ -277,7 +277,11 @@ export let dom = {
                     switch (keyboardEvent.code) {
                         case ENTER_KEY:
                         case NUMPAD_ENTER_KEY:
-                            dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            if (inputElement.value === ""){
+                                dom.cancelCardTitleEdit(cardTitleHolder, oldTitle)
+                            } else {
+                                dom.saveCardTitle(cardTitleHolder.dataset.id, inputElement.value, cardTitleHolder);
+                            }
                             break;
                         case ESC_KEY:
                             dom.cancelCardTitleEdit(cardTitleHolder, oldTitle);
