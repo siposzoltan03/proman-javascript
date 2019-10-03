@@ -315,7 +315,7 @@ export let dom = {
                 // columnOfClickedCard.setAttribute('id', 'selectedItem');
                 // Sortable.create(selectedItem);
             });
-            card.addEventListener('mouseleave', function (ev) {
+            card.addEventListener('mouseup', function (ev) {
                 let clickedCard = ev.currentTarget;
                 let boardOfCard = clickedCard.closest('.board');
                 let columnsOfCard = boardOfCard.querySelectorAll('.board-column-content');
