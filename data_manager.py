@@ -184,3 +184,10 @@ def add_new_status(cursor, status):
                    INSERT INTO statuses (title)
                    VALUES (%s)
                    """, (status,))
+
+
+@connection.connection_handler
+def change_card_status(cursor, card_id, status_id):
+    cursor.execute("""UPDATE cards
+                      SET status_id = %s
+                      WHERE id = %s""", (status_id, card_id))
