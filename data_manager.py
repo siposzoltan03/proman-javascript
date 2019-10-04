@@ -1,17 +1,6 @@
 from psycopg2 import sql
-import bcrypt
 import connection
-
-
-def hash_password(plain_text_password):
-    # By using bcrypt, the salt is saved into the hash itself
-    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes.decode('utf-8')
-
-
-def verify_password(plain_text_password, hashed_password):
-    hashed_bytes_password = hashed_password.encode('utf-8')
-    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+from util import hash_password as hash, verify_password as verify
 
 
 @connection.connection_handler
@@ -51,6 +40,13 @@ def rename_card(cursor, card_id, new_name):
 
 
 @connection.connection_handler
+def change_card_status(cursor, card_id, status_id):
+    cursor.execute("""UPDATE cards
+                      SET status_id = %s
+                      WHERE id = %s""", (status_id, card_id))
+
+
+@connection.connection_handler
 def add_new_board(cursor):
     cursor.execute("""
                   SELECT max(id) as max_id
@@ -69,14 +65,19 @@ def add_new_board(cursor):
 
 
 @connection.connection_handler
-def add_new_card(cursor, board_id):
+def add_new_card(cursor, board_id, status_id):
     cursor.execute("""SELECT COALESCE(MAX(order_num) + 1, 0)AS next FROM cards
                               WHERE board_id = %s
-                              AND status_id = 0""", (board_id,))
+                              AND status_id = %s""", (board_id, status_id))
     order_num = cursor.fetchone()["next"]
 
     cursor.execute("""INSERT INTO cards (board_id, title, status_id, order_num)
-                      VALUES (%s, 'New card', 0, %s)""", (board_id, order_num))
+                      VALUES (%s, 'new card', %s, %s) RETURNING id""", (board_id, status_id, order_num))
+    card_id = cursor.fetchone()['id']
+
+    cursor.execute("""SELECT * FROM cards
+                      WHERE id = %s""", (card_id,))
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -185,6 +186,51 @@ def add_new_status(cursor, status):
                    VALUES (%s)
                    """, (status,))
 
+
+@connection.connection_handler
+def delete_card(cursor, card_id):
+    cursor.execute("""DELETE FROM cards
+                      WHERE id = %s
+                      RETURNING order_num, status_id, board_id""", (card_id,))
+    deleted_card = cursor.fetchone()
+
+    cursor.execute("""UPDATE cards
+                      SET order_num = order_num - 1
+                      WHERE board_id = %(board_id)s
+                      AND status_id = %(status_id)s
+                      AND order_num > %(order_num)s""", {'board_id': deleted_card['board_id'],
+                                                         'status_id': deleted_card['status_id'],
+                                                         'order_num': deleted_card['order_num']})
+
+
+@connection.connection_handler
+def change_column_status(cursor, board_id, old_status_id, status_id):
+    cursor.execute("""
+                        UPDATE board_statuses
+                        SET status_id = %s
+                        WHERE board_id = %s AND status_id = %s
+                        """, (status_id, board_id, old_status_id))
+
+    cursor.execute("""
+                        UPDATE cards
+                        SET status_id = %s
+                        WHERE board_id = %s AND status_id = %s
+                        """, (status_id, board_id, old_status_id))
+
+
+@connection.connection_handler
+def registration(cursor, user):
+    print(user)
+    cursor.execute("""
+                            INSERT INTO users (registration_time, username, email, password)
+                            VALUES (%s,%s,%s,%s)
+                            """,
+                    (user['registration_time'],
+                    user['username'],
+                    user['email'],
+                    user['password'],
+                    )
+                   )
 
 @connection.connection_handler
 def change_card_status(cursor, card_id, status_id):

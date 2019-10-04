@@ -1,12 +1,15 @@
 DROP TABLE IF EXISTS public.users CASCADE;
 DROP SEQUENCE IF EXISTS public.users_id_seq;
 CREATE TABLE users (
-    id serial PRIMARY KEY,
-    username text,
+    id SERIAL PRIMARY KEY,
+    registration_time timestamp without time zone,
+    username text UNIQUE,
+    email text UNIQUE,
     password text
 );
-INSERT INTO users VALUES (1, 'admin', '$2b$12$YGebeEGSbyuGgyroX/CmJe5cbrnmC8fgtNJo4mqCQdfHKw9gySPDu');
-SELECT pg_catalog.setval('users_id_seq', 1, true);
+INSERT INTO users VALUES (1, '2017-04-28 08:29:00', 'admin', 'admin@admin.admin', '$2b$12$NvGn0FaCGzdAgTbSe7zu7eRY2CgkpV3bCEIzqhZ2837cTk3M1ewqm');
+INSERT INTO users VALUES (2, '2017-04-28 08:29:00', 'testuser', 'user@user.user', '$2b$12$RCY1YqCG7E1mRwXYy58Ux.LDK7202QWhSgnHZexd2SacOJnGRqdCm');
+SELECT pg_catalog.setval('users_id_seq', 2, true);
 
 
 DROP TABLE IF EXISTS public.boards CASCADE;
@@ -75,7 +78,7 @@ INSERT INTO board_statuses VALUES (5, 2, 0);
 INSERT INTO board_statuses VALUES (6, 2, 1);
 INSERT INTO board_statuses VALUES (7, 2, 2);
 INSERT INTO board_statuses VALUES (8, 2, 3);
-SELECT pg_catalog.setval('board_statuses_id_seq', 12, true);
+SELECT pg_catalog.setval('board_statuses_id_seq', 8, true);
 
 CREATE OR REPLACE FUNCTION default_statuses()
   RETURNS trigger AS $default_statuses$

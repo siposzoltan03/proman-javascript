@@ -4,6 +4,8 @@
     --status-2: #594300;
     --status-3: #525900;
     --status-4: #085900;
+    --status-5: #534;
+    --status-6: #724000;
 }
 
 body{
@@ -118,6 +120,14 @@ section.board{
     background: var(--status-4);
 }
 
+.board-column:nth-of-type(5) .card{
+    background: var(--status-5);
+}
+
+.board-column:nth-of-type(6) .card{
+    background: var(--status-6);
+}
+
 .card-remove{
     display: block;
     position: absolute;
@@ -184,8 +194,63 @@ section.board{
     text-align: center;
 }
 
+.modal{
+    background-color: #ffffff;
+    display: none;
+    margin: 0 auto;
+    position: fixed;
+    left: 39%;
+    top: 30%;
+    z-index: 5;
+    width: 370px;
+    border-radius: 10px;
+}
+
+.modal-close {
+    border-radius: 5px;
+    height: 25px;
+    width: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-button-container {
+    margin-top: 5px;
+    margin-right: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal form {
+    margin: 20px;
+    display: block;
+    text-align: center;
+
+}
+
+.modal form input {
+    padding: 5px 2px;
+    width: 300px;
+    background-color: #cccccc;
+    border-radius: 5px;
+}
+
+.modal form input:hover {
+    border: 2px solid #009999;
+}
+
 .column-add {
    float: right;
     margin: 13px 0px ;
 }
 
+ .dragging {
+     opacity: 0.5;
+ }
+
+ .dropzone {
+     border: 1px dashed black;
+     background-color: cyan;
+ }
